@@ -1,0 +1,38 @@
+---
+title: "Working with ABMI camera data in R"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{working_with_abmi_camera_data_in_R}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Working with ABMI Camera data in R
+
+```{r setup}
+
+library(abmi.camera.extras)
+
+```
+
+## Generate density estimates for an area of interest
+
+ABMI camera data can be used to generate species-specific density estimates for a variety of species in a given area of interest. First, we subset the ABMI camera deployments by the specified area of interest (e.g. a Wildlife Management Unit; Municipality; etc).
+
+In this example we use a sample of four WMUs - Crow Lake (code 512), Lac La Biche (503), Beaver River (502), and Amisk (504) - all of which are located in the central-east part of Alberta.   
+
+```{r}
+
+library(sf)
+wmu_sample <- st_read(system.file("extdata/wmu_sample.shp"), package = "abmi.camera.extras")
+deployments_in_wmu_sample <- subset_deployments_by_aoi(wmu_sample, cols = "WMUNIT_NAM", keep.all = FALSE)
+
+```
+
