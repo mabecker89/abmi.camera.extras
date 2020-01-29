@@ -26,20 +26,20 @@ get_cam_within_aoi <- function(x, cols = NULL, keep.all = FALSE) {
 
   # Convert sp to sf
   if (is(x, "SpatialPolygonsDataFrame"))
-    x <- st_as_sf(x)
+    x <- sf::st_as_sf(x)
   else
     x
 
   # Transform coordinates of x to epsg:4326
-  x <- st_transform(x, "+init=epsg:4326")
+  x <- sf::st_transform(x, "+init=epsg:4326")
 
   # Prepare deployment locations data into sf object
   data("abmi_deployment_locations", envir = environment())
-  locations <- st_as_sf(abmi_deployment_locations,
+  locations <- sf::st_as_sf(abmi_deployment_locations,
                         coords = c("Public_Long", "Public_Lat"), crs = 4326)
 
   # Spatially join deployments with x
-  df <- st_join(locations, x[cols], left = keep.all)
+  df <- sf::st_join(locations, x[cols], left = keep.all)
 
   return(df)
 

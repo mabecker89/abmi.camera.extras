@@ -7,3 +7,5 @@
 #' @docType package
 #' @name abmi.camera.extras
 "_PACKAGE"
+
+utils::globalVariables(c("abmi_deployment_locations", "data", "is"))
