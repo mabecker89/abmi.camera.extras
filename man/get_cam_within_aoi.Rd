@@ -20,10 +20,11 @@ a dataframe of deployments within the supplied area of interest
 Subset ABMI camera deployments by a specified spatial area of interest
 }
 \examples{
+library(sf)
 # Example aoi of four Wildlife Management Units (WMUs) in Alberta:
 wmu_sample <- st_read(system.file("extdata/wmu_sample.shp", package = "abmi.camera.extras"))
 # Obtain ABMI deployments in sample WMUs, keeping unit name
-wmu_sample_deployments <- subset_deployments_by_aoi(wmu_sample, cols = "WMUNIT_NAM")
+wmu_sample_deployments <- get_cam_within_aoi(wmu_sample, cols = "WMUNIT_NAM")
 # Plot results
 wmu_sample <- st_transform(wmu_sample, "+init=epsg:4326")
 plot(wmu_sample_deployments$geometry, pch = 21, cex = 0.7, col = "blue", bg = "gray80")
