@@ -15,11 +15,10 @@
 #' plot(wmu_sample_deployments$geometry, pch = 21, cex = 0.7, col = "blue", bg = "gray80")
 #' plot(wmu_sample$geometry, border = "gray20", col = NA, add = TRUE)
 #' @return a dataframe of deployments within the supplied area of interest
-#' @export
 #' @author Marcus Becker
 
 # Obtain camera deployments within an area of interest:
-subset_deployments_by_aoi <- function(x, cols = NULL, keep.all = FALSE) {
+get_cam_within_aoi <- function(x, cols = NULL, keep.all = FALSE) {
 
   # Check to make sure x is a spatial (sf, sfc, sp) object
   stopifnot(inherits(x, "sf") || inherits(x, "sfc") || inherits(x, "SpatialPolygonsDataFrame"))
