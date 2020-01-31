@@ -31,8 +31,25 @@ In this example we use a sample of four WMUs - Crow Lake (code 512), Lac La Bich
 ```{r}
 
 library(sf)
+
+# aoi
 wmu_sample <- st_read(system.file("extdata/wmu_sample.shp", package = "abmi.camera.extras"))
-deployments_in_wmu_sample <- get_cam_within_aoi(wmu_sample, cols = "WMUNIT_NAM", keep.all = FALSE)
+
+# Find deployments in aoi
+wmu_sample_deployments <- get_cam_within_aoi(wmu_sample, cols = "WMUNIT_NAM", keep.all = FALSE)
 
 ```
+
+From here we can join density estimates for a species of interest in a given year.
+
+```{r}
+
+# Join density
+df_density <- join_density(wmu_sample_deployments, species = c("Moose", "Mule deer"), nest = TRUE)
+
+```
+
+
+
+
 

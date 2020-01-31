@@ -14,10 +14,12 @@ LazyData: true
 Imports: 
     dplyr,
     sf,
-    methods
+    methods,
+    tidyr
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr
 URL: https://github.com/mabecker89/abmi.camera.extras
 BugReports: https://github.com/mabecker89/abmi.camera.extras/issues
