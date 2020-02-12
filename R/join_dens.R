@@ -1,4 +1,4 @@
-#' Join estimated density values to deployments
+#' Join estimated single-deployment density values
 #'
 #' @param x a dataframe of deployments of interest, including at minimum the deployment id and year
 #' @param species character; vector of species of interest (common name). If left blank, all species available will be returned.
@@ -30,37 +30,51 @@
 #'                  Year = c(2015, 2015, 2015, 2015)) %>%
 #'                  mutate_if(is.factor, as.character)
 #' # Join density estimates (e.g. Moose in 2015)
-#' df_densities <- join_density(df, species = "Moose", year = "2015", nest = FALSE)
+#' df_densities <- join_den(df, species = "Moose", year = "2015", nest = FALSE)
 #' @return Tidy dataframe of deployments in year(s) specified with two appended columns: species and estimated density.
 #' @author Marcus Becker
 
 # Join density estimates
-join_density <- function(x, species, year, nest = FALSE) {
+join_dens <- function(x, species, year, nest = FALSE) {
 
   # Prepare density data
   data("density", envir = environment())
 
-  # Create default values from species and year
+  # Possible species
+  sp <- c("White-tailed Deer",
+          "Mule deer",
+          "Moose",
+          "Elk (wapiti)",
+          "Black Bear",
+          "Coyote",
+          "Pronghorn",
+          "Snowshoe Hare",
+          "Woodland Caribou",
+          "Canada Lynx",
+          "Gray Wolf")
+
+  # Possible years
+  yr <- c("2013", "2014", "2015", "2016", "2017", "2018")
+
+  # Create default values for species and year
   if(missing(species)) {
-    species <- c("White-tailed Deer",
-                 "Mule deer",
-                 "Moose",
-                 "Elk (wapiti)",
-                 "Black Bear",
-                 "Coyote",
-                 "Pronghorn",
-                 "Snowshoe Hare",
-                 "Woodland Caribou",
-                 "Canada Lynx",
-                 "Gray Wolf")
+    species <- sp
   } else {
     species
   }
 
   if(missing(year)) {
-    year <- c("2013", "2014", "2015", "2016", "2017", "2018")
+    year <- yr
   } else {
     year
+  }
+
+  # Stop call if species or year is not within range of possible values
+  if(!species %in% sp) {
+    stop("A valid species must be supplied. See ?join_density for list of possible values", call. = TRUE)
+  }
+  if(!year %in% yr) {
+    stop("A valid year must be supplied. See ?join_density for a list of possible values", call. = TRUE)
   }
 
   # Subset density by species and year
