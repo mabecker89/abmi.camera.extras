@@ -50,7 +50,7 @@ And includes the following species:
 
 Current geographic coverage of sampling in the province can be seen in the map below:
 
-```{r echo=FALSE, out.width="70%", fig.cap="ABMI sites with camera deployments (2015-2018)",fig.align="center", fig.height=6}
+```{r echo=FALSE, fig.align="center", fig.height=6}
 
 knitr::include_graphics("./man/figures/map_deployments.png")
 
@@ -152,10 +152,20 @@ df_dens_summary <- summarise_dens(x = df_dens,
                                   agg.years = FALSE, # option to aggregate years together
                                   conflevel = 0.9) # for confidence interval - default 90%
 
-knitr::kable(df_dens_summary)
-
 ```
 
+Note that this family of three functions is designed to work with a [pipeline-based workflow](https://r4ds.had.co.nz/pipes.html), and can be re-written in the following way:
+
+```{r}
+
+df_dens_summary <- sf_wmu %>%
+  get_cam(cols = "WMUNIT_NAM", keep.all = FALSE) %>%
+  join_dens(species = c("Moose", "Mule deer")) %>%
+  summarise_dens(group = WMUNIT_NAM, agg.years = FALSE, conflevel = 0.9)
+
+knitr::kable(head(df_dens_summary, n = 10))
+
+```
 
 
 
