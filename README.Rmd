@@ -4,7 +4,7 @@ output:
     html_preview: false
 ---
 
-```{r setup, include=TRUE}
+```{r setup, include=TRUE, echo=FALSE}
 
 library(knitr)
 # Set knitr chunk options
@@ -12,7 +12,7 @@ opts_chunk$set(include=TRUE, echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE)
 
 ```
 
-## abmi.camera.extras
+# abmi.camera.extras
 
 > Functions for using ABMI camera data to estimate animal density
 
@@ -27,12 +27,15 @@ opts_chunk$set(include=TRUE, echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE)
 This package provides access to the Alberta Biodiversity Monitoring Institute's (ABMI) camera-level animal density estimates, which can be used to estimate the density (and associated confidence bounds) of various species in a user-defined area of interest. For more information on how the ABMI estimates animal density from camera data, visit this [repository](https://github.com/ABbiodiversity/mammals-camera) for a detailed explanation and code base.
 
 This package currently contains ABMI camera data from:
+
 + 2015
 + 2016
 + 2017
 + 2018
 + 2019 (*coming soon!*)
+
 And includes the following species:
+
 + White-tailed Deer
 + Mule deer
 + Moose
@@ -45,9 +48,9 @@ And includes the following species:
 + Canada Lynx
 + Gray Wolf
 
-Current geographic coverage of sampling in the province:
+Current geographic coverage of sampling in the province can be seen in the map below:
 
-```{r echo=FALSE, out.width="70%", fig.cap="ABMI sites with camera deployments (2015-2018)"}
+```{r echo=FALSE, out.width="70%", fig.cap="ABMI sites with camera deployments (2015-2018)",fig.align="center", fig.height=6}
 
 knitr::include_graphics("./man/figures/map_deployments.png")
 
@@ -60,7 +63,7 @@ knitr::include_graphics("./man/figures/map_deployments.png")
 # Install the latest version from Github:
 # install.packages("devtools")
 
-devtools::install_github("mabecker89/abmi.camera.extras")
+# devtools::install_github("mabecker89/abmi.camera.extras")
 
 ```
 
@@ -91,7 +94,7 @@ The first step is to define an area of interest, such as a Wildlife Management U
 ```{r}
 
 # Define aoi
-sf_wmu <- sf::st_read(system.file("extdata/wmu_sample.shp", package = "abmi.camera.extras"))
+sf_wmu <- sf::st_read(system.file("extdata/wmu_sample.shp", package = "abmi.camera.extras"), quiet = TRUE)
 
 # Take a look at structure and attributes
 tibble::glimpse(sf_wmu)
@@ -107,7 +110,14 @@ df_deployments <- get_cam(aoi = sf_wmu,
                           cols = "WMUNIT_NAM", # Maintain WMU name attribute in output
                           keep.all = FALSE)
 
+# Plot deployments
+sf_wmu <- st_transform(sf_wmu, "+init=epsg:4326")
+plot(df_deployments$geometry, pch = 21, cex = 0.7, col = "blue", bg = "gray80")
+plot(sf_wmu$geometry, border = "gray20", col = NA, add = TRUE)
+
 ```
+
+Note that there are four cameras deployed at each ABMI site, 600-m apart. Each point on the plot represents a site, which has four deployments. See [here](https://www.abmi.ca/home/publications/551-600/565) for detailed explanation of remote camera trap protocols. 
 
 From here we can join density estimates for a species of interest in a given year for each deployment using the `join_dens()` function:
 
@@ -123,13 +133,26 @@ df_dens <- join_dens(x = df_deployments,
 
 The last step is to estimate the density of each of the species defined previously in the area of the interest, which can be done with the `summarise_dens()` function.
 
+The output is a dataframe with the following attributes (beside the grouping variable, year, and species):
+
++ `occupied` - number of deployments with a individual of that species present
++ `n_deployments` - total number of deployments
++ `occupancy` - proportion of deployments occupied (not detection probability adjusted)
++ `density_avg` - estimated density for the area/year/species combination
++ `density_lci` - lower bounds of confidence interval (level specified in `conflevel` attribute)
++ `density_uci` - upper bounds of confidence interval
+
+The precision of the density estimate is estimated using the [delta method](https://en.wikipedia.org/wiki/Delta_method).
+
 ```{r}
 
-# Summarse density
+# Summarise density
 df_dens_summary <- summarise_dens(x = df_dens,
                                   group = WMUNIT_NAM, # to group deployments when evaluating multiple aoi
                                   agg.years = FALSE, # option to aggregate years together
                                   conflevel = 0.9) # for confidence interval - default 90%
+
+knitr::kable(df_dens_summary)
 
 ```
 
