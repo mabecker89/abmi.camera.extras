@@ -15,7 +15,9 @@ Imports:
     dplyr,
     sf,
     methods,
-    tidyr
+    tidyr,
+    rlang,
+    purrr
 Suggests: 
     knitr,
     rmarkdown,

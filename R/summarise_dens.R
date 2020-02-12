@@ -3,9 +3,9 @@
 #' @param x a dataframe of deployments of interest with associated density estimates
 #' @param group variable to group by if x contains multiple areas; defaults to NULL (for when a single area is supplied)
 #' @param agg.years logical; if FALSE, the default, density is summarised by year; if TRUE all years are aggregated
-#' @param conflevel level of confidence for the confidence interval; defaults to 0.9 (90% CI)
-#' @details valid values for argument \code{species} currently are:
-#' @import dplyr tidyr sf rlang purrr
+#' @param conflevel level of confidence for the confidence interval; defaults to 0.9 (90 percent CI)
+#' @import dplyr tidyr sf purrr
+#' @importFrom rlang quo_is_null .data
 #' @export
 #' @examples
 #' library(dplyr)
@@ -14,7 +14,9 @@
 #' wmu_sample <- st_read(system.file("extdata/wmu_sample.shp", package = "abmi.camera.extras"))
 #' # Obtain ABMI deployments in sample WMUs, keeping unit name
 #' wmu_sample_deployments <- get_cam(wmu_sample, cols = "WMUNIT_NAM")
-#' wmu_sample_deployments_dens <- join_dens(wmu_sample_deployments, species = c("Moose", "Mule deer"), nest = FALSE)
+#' wmu_sample_deployments_dens <- join_dens(wmu_sample_deployments,
+#'                                          species = c("Moose", "Mule deer"),
+#'                                          nest = FALSE)
 #' # Summarise density by WMU and year
 #' wmu_densities <- summarise_dens(x = wmu_sample_deployments_dens,
 #'                                 group = WMUNIT_NAM,
@@ -23,6 +25,7 @@
 #' @return A dataframe with estimated density and associated confidence interval
 #' @author Marcus Becker
 
+# Summarise density
 summarise_dens <- function(x, group = NULL, agg.years = FALSE, conflevel = 0.9) {
 
   # If present, drop geometry
@@ -49,6 +52,8 @@ summarise_dens <- function(x, group = NULL, agg.years = FALSE, conflevel = 0.9) 
     x <- x %>% dplyr::group_by(Year, common_name, add = TRUE)
   }
 
+  occupied <- n_deployments <- occupancy <- agp <- agp.se <- density_avg <- NULL
+
   # Summarise density
   df <- x %>%
     dplyr::summarise(
@@ -60,6 +65,8 @@ summarise_dens <- function(x, group = NULL, agg.years = FALSE, conflevel = 0.9) 
     dplyr::mutate(
       agp = ifelse(agp == "NaN", 0, agp),
       density_avg = occupancy * agp)
+
+  sim <- density_uci <- density_lci <- NULL
 
   # Simulate for CI
   df <- df %>%
@@ -97,18 +104,3 @@ summarise_dens <- function(x, group = NULL, agg.years = FALSE, conflevel = 0.9) 
   return(df)
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

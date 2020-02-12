@@ -30,7 +30,7 @@
 #'                  Year = c(2015, 2015, 2015, 2015)) %>%
 #'                  mutate_if(is.factor, as.character)
 #' # Join density estimates (e.g. Moose in 2015)
-#' df_densities <- join_den(df, species = "Moose", year = "2015", nest = FALSE)
+#' df_densities <- join_dens(df, species = "Moose", year = "2015", nest = FALSE)
 #' @return Tidy dataframe of deployments in year(s) specified with two appended columns: species and estimated density.
 #' @author Marcus Becker
 

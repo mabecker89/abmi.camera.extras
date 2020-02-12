@@ -8,4 +8,5 @@
 #' @name abmi.camera.extras
 "_PACKAGE"
 
-utils::globalVariables(c("abmi_deployment_locations", "data", "is"))
+utils::globalVariables(c("abmi_deployment_locations", "data", "is", "density",
+                         "common_name", "Year"))

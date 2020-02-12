@@ -1,6 +1,6 @@
 #' Subset ABMI camera deployments by a specified spatial area of interest
 #'
-#' @param x The area of interest as an sf, sfc, or sp (SpatialPolygonsDataFrame) object
+#' @param aoi The area of interest as an sf, sfc, or sp (SpatialPolygonsDataFrame) object
 #' @param cols character; indicates which columns (attributes) from x to be appended to the deployments dataframe
 #' @param keep.all logical; if TRUE all deployments are kept, otherwise only those within x are kept
 #' @import sf
