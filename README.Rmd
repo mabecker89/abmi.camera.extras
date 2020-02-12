@@ -50,7 +50,7 @@ And includes the following species:
 
 Current geographic coverage of sampling in the province can be seen in the map below:
 
-```{r echo=FALSE, fig.align="center", fig.height=6}
+```{r echo=FALSE, fig.align="center", fig.height=3}
 
 knitr::include_graphics("./man/figures/map_deployments.png")
 
