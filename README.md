@@ -38,7 +38,7 @@ And includes the following species:
 
 Current geographic coverage of sampling in the province can be seen in the map below:
 
-<img src="./man/figures/map_deployments.png" width="50%" style="display: block; margin: auto;" />
+<img src="./man/figures/map_deployments.png" width="65%" style="display: block; margin: auto;" />
 
 Installation
 ------------
@@ -153,13 +153,13 @@ knitr::kable(head(df_dens_summary, n = 10))
 
 | WMUNIT\_NAM  |  Year| common\_name |  occupied|  n\_deployments|  occupancy|  density\_avg|  density\_lci\_0.9|  density\_uci\_0.9|
 |:-------------|-----:|:-------------|---------:|---------------:|----------:|-------------:|------------------:|------------------:|
-| Amisk        |  2014| Moose        |         4|               4|  1.0000000|     4.6282195|          3.4209281|          6.0574464|
+| Amisk        |  2014| Moose        |         4|               4|  1.0000000|     4.6282195|          3.4160483|          6.0797204|
 | Amisk        |  2014| Mule deer    |         0|               4|  0.0000000|     0.0000000|          0.0000000|          0.0000000|
-| Amisk        |  2018| Moose        |         6|              15|  0.4000000|     0.5831947|          0.2769316|          0.9317424|
+| Amisk        |  2018| Moose        |         6|              15|  0.4000000|     0.5831947|          0.2728063|          0.9338794|
 | Amisk        |  2018| Mule deer    |         1|              15|  0.0666667|     0.0102491|          0.0102491|          0.0102491|
-| Beaver River |  2016| Moose        |         6|              21|  0.2857143|     0.1977091|          0.0831206|          0.3353613|
-| Beaver River |  2016| Mule deer    |         3|              21|  0.1428571|     0.0153613|          0.0041056|          0.0309401|
-| Beaver River |  2017| Moose        |         4|               4|  1.0000000|     1.1013434|          0.6237765|          1.7608526|
+| Beaver River |  2016| Moose        |         6|              21|  0.2857143|     0.1977091|          0.0854798|          0.3348017|
+| Beaver River |  2016| Mule deer    |         3|              21|  0.1428571|     0.0153613|          0.0040652|          0.0307724|
+| Beaver River |  2017| Moose        |         4|               4|  1.0000000|     1.1013434|          0.6225739|          1.7634510|
 | Beaver River |  2017| Mule deer    |         0|               4|  0.0000000|     0.0000000|          0.0000000|          0.0000000|
-| Beaver River |  2018| Moose        |         6|               9|  0.6666667|     1.7548748|          0.9578670|          2.6655928|
+| Beaver River |  2018| Moose        |         6|               9|  0.6666667|     1.7548748|          0.9554239|          2.6823472|
 | Beaver River |  2018| Mule deer    |         0|               9|  0.0000000|     0.0000000|          0.0000000|          0.0000000|
