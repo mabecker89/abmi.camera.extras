@@ -47,7 +47,7 @@ Installation
 # Install the latest version from Github:
 # install.packages("devtools")
 
-# devtools::install_github("mabecker89/abmi.camera.extras")
+devtools::install_github("mabecker89/abmi.camera.extras")
 ```
 
 Features
