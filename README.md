@@ -1,11 +1,3 @@
----
-output:
-  github_document:
-    html_preview: false
----
-
-
-
 # abmi.camera.extras
 
 > Functions for using ABMI camera data to estimate animal density
