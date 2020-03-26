@@ -6,9 +6,9 @@
 \title{ABMI camera deployments public locations}
 \format{A data.frame with 5 columns
 \describe{
-\item{Deployment}{The camera deployment ID}
-\item{NearestSite}{The corresponding nearest ABMI sampling site}
-\item{Year}{The year the camera was deployment}
+\item{Deployment}{The camera deployment ID. Format is <Project Code>-<Site>-<Station>, e.g. ABMI-1-NE.}
+\item{NearestSite}{The corresponding nearest ABMI sampling site.}
+\item{Year}{The year the camera was deployed.}
 \item{Public_Lat}{The public latitude}
 \item{Public_Long}{The public longitude}
 }}

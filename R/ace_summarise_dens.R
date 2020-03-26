@@ -13,12 +13,12 @@
 #' # Example aoi of four Wildlife Management Units (WMUs) in Alberta:
 #' wmu_sample <- st_read(system.file("extdata/wmu_sample.shp", package = "abmi.camera.extras"))
 #' # Obtain ABMI deployments in sample WMUs, keeping unit name
-#' wmu_sample_deployments <- get_cam(wmu_sample, cols = "WMUNIT_NAM")
-#' wmu_sample_deployments_dens <- join_dens(wmu_sample_deployments,
+#' wmu_sample_deployments <- ace_get_cam(wmu_sample, cols = "WMUNIT_NAM")
+#' wmu_sample_deployments_dens <- ace_join_dens(wmu_sample_deployments,
 #'                                          species = c("Moose", "Mule deer"),
 #'                                          nest = FALSE)
 #' # Summarise density by WMU and year
-#' wmu_densities <- summarise_dens(x = wmu_sample_deployments_dens,
+#' wmu_densities <- ace_summarise_dens(x = wmu_sample_deployments_dens,
 #'                                 group = WMUNIT_NAM,
 #'                                 agg.years = FALSE,
 #'                                 conflevel = 0.9)
@@ -26,7 +26,7 @@
 #' @author Marcus Becker
 
 # Summarise density
-summarise_dens <- function(x, group = NULL, agg.years = FALSE, conflevel = 0.9) {
+ace_summarise_dens <- function(x, group = NULL, agg.years = FALSE, conflevel = 0.9) {
 
   # If present, drop geometry
   if("geometry" %in% names(x)) {
@@ -52,19 +52,19 @@ summarise_dens <- function(x, group = NULL, agg.years = FALSE, conflevel = 0.9) 
     x <- x %>% dplyr::group_by(Year, common_name, add = TRUE)
   }
 
-  occupied <- n_deployments <- occupancy <- agp <- agp.se <- density_avg <- NULL
+  occupied <- n_deployments <- prop_occupied <- agp <- agp.se <- density_avg <- NULL
 
   # Summarise density
   df <- x %>%
     dplyr::summarise(
       occupied = sum(density > 0, na.rm = TRUE),
       n_deployments = dplyr::n(),
-      occupancy = occupied / n_deployments,
+      prop_occupied = occupied / n_deployments,
       agp = mean(density[density > 0]),
       agp.se = sd(density[density > 0]) / sqrt(occupied)) %>%
     dplyr::mutate(
       agp = ifelse(agp == "NaN", 0, agp),
-      density_avg = occupancy * agp)
+      density_avg = prop_occupied * agp)
 
   sim <- density_uci <- density_lci <- NULL
 
@@ -76,7 +76,7 @@ summarise_dens <- function(x, group = NULL, agg.years = FALSE, conflevel = 0.9) 
       agp.se = purrr::map(.x = data, .f = ~ purrr::pluck(.x[["agp.se"]])),
       sim = purrr::map_if(.x = data,
                           .p = !is.na(agp.se),
-                          .f = ~ simul_ci(prob = .x$occupancy,
+                          .f = ~ simul_ci(prob = .x$prop_occupied,
                                           trials = .x$n_deployments,
                                           adj = .x$occupied,
                                           agp = .x$agp,

@@ -10,7 +10,7 @@
 #' # Example aoi of four Wildlife Management Units (WMUs) in Alberta:
 #' wmu_sample <- st_read(system.file("extdata/wmu_sample.shp", package = "abmi.camera.extras"))
 #' # Obtain ABMI deployments in sample WMUs, keeping unit name
-#' wmu_sample_deployments <- get_cam(wmu_sample, cols = "WMUNIT_NAM")
+#' wmu_sample_deployments <- ace_get_cam(wmu_sample, cols = "WMUNIT_NAM")
 #' # Plot results
 #' wmu_sample <- st_transform(wmu_sample, "+init=epsg:4326")
 #' plot(wmu_sample_deployments$geometry, pch = 21, cex = 0.7, col = "blue", bg = "gray80")
@@ -19,7 +19,7 @@
 #' @author Marcus Becker
 
 # Obtain camera deployments within an area of interest:
-get_cam <- function(aoi, cols = NULL, keep.all = FALSE) {
+ace_get_cam <- function(aoi, cols = NULL) {
 
   # Check to make sure aoiis a spatial (sf, sfc, sp) object
   stopifnot(inherits(aoi, "sf") || inherits(aoi, "sfc") || inherits(aoi, "SpatialPolygonsDataFrame"))
@@ -44,7 +44,7 @@ get_cam <- function(aoi, cols = NULL, keep.all = FALSE) {
                         coords = c("Public_Long", "Public_Lat"), crs = 4326)
 
   # Spatially join deployments with x
-  df <- sf::st_join(locations, aoi[cols], left = keep.all)
+  df <- sf::st_join(locations, aoi[cols], left = FALSE)
 
   return(df)
 

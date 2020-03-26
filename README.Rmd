@@ -48,7 +48,7 @@ And includes the following species:
 + Canada Lynx
 + Gray Wolf
 
-Current geographic coverage of sampling in the province can be seen in the map below:
+Current (as of 2018) geographic coverage of sampling in the province can be seen in the map below:
 
 ```{r echo=FALSE, out.width="65%", fig.align="center"}
 
@@ -58,12 +58,12 @@ knitr::include_graphics("./man/figures/map_deployments.png")
 
 ## Installation
 
-```{r}
+```{r, include=TRUE, eval=FALSE}
 
 # Install the latest version from Github:
-# install.packages("devtools")
+# install.packages("remotes")
 
-# devtools::install_github("mabecker89/abmi.camera.extras")
+remotes::install_github("mabecker89/abmi.camera.extras")
 
 ```
 
@@ -101,14 +101,13 @@ tibble::glimpse(sf_wmu)
 
 ```
 
-Next, we subset ABMI camera deployments spatially with the `get_cam()` function:
+Next, we subset ABMI camera deployments spatially with the `ace_get_cam()` function:
 
 ```{r warning=FALSE}
 
 # Retrieve deployments in aoi as dataframe
-df_deployments <- get_cam(aoi = sf_wmu,
-                          cols = "WMUNIT_NAM", # Maintain WMU name attribute in output
-                          keep.all = FALSE)
+df_deployments <- ace_get_cam(aoi = sf_wmu,
+                          cols = "WMUNIT_NAM") # Maintain WMU name attribute in output
 
 # Plot deployments
 sf_wmu <- st_transform(sf_wmu, "+init=epsg:4326")
@@ -119,25 +118,25 @@ plot(sf_wmu$geometry, border = "gray20", col = NA, add = TRUE)
 
 Note that there are four cameras deployed at each ABMI site, 600-m apart. Each point on the plot represents a site, which has four deployments. See [here](https://www.abmi.ca/home/publications/551-600/565) for detailed explanation of remote camera trap protocols. 
 
-From here we can join density estimates for a species of interest in a given year for each deployment using the `join_dens()` function:
+From here we can join density estimates for a species of interest in a given year for each deployment using the `ace_join_dens()` function:
 
 ```{r warning=FALSE}
 
 # Join density
-df_dens <- join_dens(x = df_deployments,
-                     species = c("Moose", "Mule deer"), # See ?join_dens for list of available species
+df_dens <- ace_join_dens(x = df_deployments,
+                     species = c("Moose", "Mule deer"), # See ?ace_join_dens for list of available species
                      # year = "2018" option to define specific year if desired
                      nest = FALSE)
 
 ```
 
-The last step is to estimate the density of each of the species defined previously in the area of the interest, which can be done with the `summarise_dens()` function.
+The last step is to estimate the density of each of the species defined previously in the area of the interest, which can be done with the `ace_summarise_dens()` function.
 
 The output is a dataframe with the following attributes (beside the grouping variable, year, and species):
 
 + `occupied` - number of deployments with a individual of that species present
 + `n_deployments` - total number of deployments
-+ `occupancy` - proportion of deployments occupied (not detection probability adjusted)
++ `prop_occupied` - proportion of deployments occupied
 + `density_avg` - estimated density for the area/year/species combination
 + `density_lci` - lower bounds of confidence interval (level specified in `conflevel` attribute)
 + `density_uci` - upper bounds of confidence interval
@@ -147,10 +146,10 @@ The precision of the density estimate is estimated using the [delta method](http
 ```{r}
 
 # Summarise density
-df_dens_summary <- summarise_dens(x = df_dens,
-                                  group = WMUNIT_NAM, # to group deployments when evaluating multiple aoi
-                                  agg.years = FALSE, # option to aggregate years together
-                                  conflevel = 0.9) # for confidence interval - default 90%
+df_dens_summary <- ace_summarise_dens(x = df_dens,
+                                      group = WMUNIT_NAM, # to group deployments when evaluating multiple aoi
+                                      agg.years = FALSE, # option to aggregate years together
+                                      conflevel = 0.9) # for confidence interval - default 90%
 
 ```
 
@@ -159,9 +158,9 @@ Note that this family of three functions is designed to work with a [pipeline-ba
 ```{r}
 
 df_dens_summary <- sf_wmu %>%
-  get_cam(cols = "WMUNIT_NAM", keep.all = FALSE) %>%
-  join_dens(species = c("Moose", "Mule deer")) %>%
-  summarise_dens(group = WMUNIT_NAM, agg.years = FALSE, conflevel = 0.9)
+  ace_get_cam(cols = "WMUNIT_NAM") %>%
+  ace_join_dens(species = c("Moose", "Mule deer")) %>%
+  ace_summarise_dens(group = WMUNIT_NAM, agg.years = FALSE, conflevel = 0.9)
 
 knitr::kable(head(df_dens_summary, n = 10))
 

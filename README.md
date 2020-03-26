@@ -1,68 +1,73 @@
+---
+output:
+  github_document:
+    html_preview: false
+---
 
-abmi.camera.extras
-==================
+
+
+# abmi.camera.extras
 
 > Functions for using ABMI camera data to estimate animal density
 
 <!-- badges: start -->
-[![Travis build status](https://travis-ci.org/mabecker89/abmi.camera.extras.svg?branch=master)](https://travis-ci.org/mabecker89/abmi.camera.extras) <!-- badges: end -->
+[![Travis build status](https://travis-ci.org/mabecker89/abmi.camera.extras.svg?branch=master)](https://travis-ci.org/mabecker89/abmi.camera.extras)
+<!-- badges: end -->
 
 **Warning: under development!**
 
-Overview
---------
+## Overview
 
 This package provides access to the Alberta Biodiversity Monitoring Institute's (ABMI) camera-level animal density estimates, which can be used to estimate the density (and associated confidence bounds) of various species in a user-defined area of interest. For more information on how the ABMI estimates animal density from camera data, visit this [repository](https://github.com/ABbiodiversity/mammals-camera) for a detailed explanation and code base.
 
 This package currently contains ABMI camera data from:
 
--   2015
--   2016
--   2017
--   2018
--   2019 (*coming soon!*)
++ 2015
++ 2016
++ 2017
++ 2018
++ 2019 (*coming soon!*)
 
 And includes the following species:
 
--   White-tailed Deer
--   Mule deer
--   Moose
--   Elk (wapiti)
--   Black Bear
--   Coyote
--   Pronghorn
--   Snowshoe Hare
--   Woodland Caribou
--   Canada Lynx
--   Gray Wolf
++ White-tailed Deer
++ Mule deer
++ Moose
++ Elk (wapiti)
++ Black Bear
++ Coyote
++ Pronghorn
++ Snowshoe Hare
++ Woodland Caribou
++ Canada Lynx
++ Gray Wolf
 
-Current geographic coverage of sampling in the province can be seen in the map below:
+Current (as of 2018) geographic coverage of sampling in the province can be seen in the map below:
 
-<img src="./man/figures/map_deployments.png" width="65%" style="display: block; margin: auto;" />
+<img src="./man/figures/map_deployments.png" title="plot of chunk unnamed-chunk-1" alt="plot of chunk unnamed-chunk-1" width="65%" style="display: block; margin: auto;" />
 
-Installation
-------------
+## Installation
 
-``` r
+
+```r
 # Install the latest version from Github:
-# install.packages("devtools")
+# install.packages("remotes")
 
-devtools::install_github("mabecker89/abmi.camera.extras")
+remotes::install_github("mabecker89/abmi.camera.extras")
 ```
 
-Features
---------
+## Features
 
 The primary objective of this package is to allow users to estimate the density of a species of interest in an area of interest. For this objective, three steps are neccessary:
 
--   Spatially subset ABMI camera deployments by a user-supplied area of interest (or multiple);
--   Join pre-processed individual deployment density estimates to the this spatial subset;
--   Summarise density for the area of interest as a whole, including confidence bounds.
++ Spatially subset ABMI camera deployments by a user-supplied area of interest (or multiple);
++ Join pre-processed individual deployment density estimates to the this spatial subset;
++ Summarise density for the area of interest as a whole, including confidence bounds.
 
-Usage
------
+## Usage
 
-``` r
+
+```r
 # Load package
 library(abmi.camera.extras)
 
@@ -72,9 +77,10 @@ library(sf)
 # library(sp)
 ```
 
-The first step is to define an area of interest, such as a Wildlife Management Unit, Municipality, Land Use Planning Region, etc. Below, this is done using the `sf` package to read in a shapefile of four WMUs - Crow Lake (code 512), Lac La Biche (503), Beaver River (502), and Amisk (504) - all of which are located in the central-east part of Alberta.
+The first step is to define an area of interest, such as a Wildlife Management Unit, Municipality, Land Use Planning Region, etc. Below, this is done using the `sf` package to read in a shapefile of four WMUs - Crow Lake (code 512), Lac La Biche (503), Beaver River (502), and Amisk (504) - all of which are located in the central-east part of Alberta. 
 
-``` r
+
+```r
 # Define aoi
 sf_wmu <- sf::st_read(system.file("extdata/wmu_sample.shp", package = "abmi.camera.extras"), quiet = TRUE)
 
@@ -82,22 +88,24 @@ sf_wmu <- sf::st_read(system.file("extdata/wmu_sample.shp", package = "abmi.came
 tibble::glimpse(sf_wmu)
 ```
 
-    ## Observations: 4
-    ## Variables: 6
-    ## $ OBJECTID   <dbl> 25, 34, 49, 50
-    ## $ WMUNIT_NAM <fct> Crow Lake, Lac La Biche, Beaver River, Amisk
-    ## $ WMUNIT_COD <fct> 00512, 00503, 00502, 00504
-    ## $ Shape_STAr <dbl> 8018929846, 3220514507, 3585827617, 2704241428
-    ## $ Shape_STLe <dbl> 476404.3, 355774.1, 293530.4, 252285.2
-    ## $ geometry   <POLYGON [m]> POLYGON ((754560.7 6209247,..., POLYGON ((713202...
+```
+## Observations: 4
+## Variables: 6
+## $ OBJECTID   <dbl> 25, 34, 49, 50
+## $ WMUNIT_NAM <fct> Crow Lake, Lac La Biche, Beaver River, Amisk
+## $ WMUNIT_COD <fct> 00512, 00503, 00502, 00504
+## $ Shape_STAr <dbl> 8018929846, 3220514507, 3585827617, 2704241428
+## $ Shape_STLe <dbl> 476404.3, 355774.1, 293530.4, 252285.2
+## $ geometry   <POLYGON [m]> POLYGON ((754560.7 6209247,..., POLYGON ((713202.4 6072527,..., POLYGON ((726590.5 6050538,..., POLYGON ((658601.6 ...
+```
 
-Next, we subset ABMI camera deployments spatially with the `get_cam()` function:
+Next, we subset ABMI camera deployments spatially with the `ace_get_cam()` function:
 
-``` r
+
+```r
 # Retrieve deployments in aoi as dataframe
-df_deployments <- get_cam(aoi = sf_wmu,
-                          cols = "WMUNIT_NAM", # Maintain WMU name attribute in output
-                          keep.all = FALSE)
+df_deployments <- ace_get_cam(aoi = sf_wmu,
+                          cols = "WMUNIT_NAM") # Maintain WMU name attribute in output
 
 # Plot deployments
 sf_wmu <- st_transform(sf_wmu, "+init=epsg:4326")
@@ -105,61 +113,73 @@ plot(df_deployments$geometry, pch = 21, cex = 0.7, col = "blue", bg = "gray80")
 plot(sf_wmu$geometry, border = "gray20", col = NA, add = TRUE)
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-5-1.png)
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png)
 
-Note that there are four cameras deployed at each ABMI site, 600-m apart. Each point on the plot represents a site, which has four deployments. See [here](https://www.abmi.ca/home/publications/551-600/565) for detailed explanation of remote camera trap protocols.
+Note that there are four cameras deployed at each ABMI site, 600-m apart. Each point on the plot represents a site, which has four deployments. See [here](https://www.abmi.ca/home/publications/551-600/565) for detailed explanation of remote camera trap protocols. 
 
-From here we can join density estimates for a species of interest in a given year for each deployment using the `join_dens()` function:
+From here we can join density estimates for a species of interest in a given year for each deployment using the `ace_join_dens()` function:
 
-``` r
+
+```r
 # Join density
-df_dens <- join_dens(x = df_deployments,
-                     species = c("Moose", "Mule deer"), # See ?join_dens for list of available species
+df_dens <- ace_join_dens(x = df_deployments,
+                     species = c("Moose", "Mule deer"), # See ?ace_join_dens for list of available species
                      # year = "2018" option to define specific year if desired
                      nest = FALSE)
 ```
 
-The last step is to estimate the density of each of the species defined previously in the area of the interest, which can be done with the `summarise_dens()` function.
+The last step is to estimate the density of each of the species defined previously in the area of the interest, which can be done with the `ace_summarise_dens()` function.
 
 The output is a dataframe with the following attributes (beside the grouping variable, year, and species):
 
--   `occupied` - number of deployments with a individual of that species present
--   `n_deployments` - total number of deployments
--   `occupancy` - proportion of deployments occupied (not detection probability adjusted)
--   `density_avg` - estimated density for the area/year/species combination
--   `density_lci` - lower bounds of confidence interval (level specified in `conflevel` attribute)
--   `density_uci` - upper bounds of confidence interval
++ `occupied` - number of deployments with a individual of that species present
++ `n_deployments` - total number of deployments
++ `prop_occupied` - proportion of deployments occupied
++ `density_avg` - estimated density for the area/year/species combination
++ `density_lci` - lower bounds of confidence interval (level specified in `conflevel` attribute)
++ `density_uci` - upper bounds of confidence interval
 
 The precision of the density estimate is estimated using the [delta method](https://en.wikipedia.org/wiki/Delta_method).
 
-``` r
+
+```r
 # Summarise density
-df_dens_summary <- summarise_dens(x = df_dens,
-                                  group = WMUNIT_NAM, # to group deployments when evaluating multiple aoi
-                                  agg.years = FALSE, # option to aggregate years together
-                                  conflevel = 0.9) # for confidence interval - default 90%
+df_dens_summary <- ace_summarise_dens(x = df_dens,
+                                      group = WMUNIT_NAM, # to group deployments when evaluating multiple aoi
+                                      agg.years = FALSE, # option to aggregate years together
+                                      conflevel = 0.9) # for confidence interval - default 90%
 ```
 
 Note that this family of three functions is designed to work with a [pipeline-based workflow](https://r4ds.had.co.nz/pipes.html), and can be re-written in the following way:
 
-``` r
+
+```r
 df_dens_summary <- sf_wmu %>%
-  get_cam(cols = "WMUNIT_NAM", keep.all = FALSE) %>%
-  join_dens(species = c("Moose", "Mule deer")) %>%
-  summarise_dens(group = WMUNIT_NAM, agg.years = FALSE, conflevel = 0.9)
+  ace_get_cam(cols = "WMUNIT_NAM") %>%
+  ace_join_dens(species = c("Moose", "Mule deer")) %>%
+  ace_summarise_dens(group = WMUNIT_NAM, agg.years = FALSE, conflevel = 0.9)
 
 knitr::kable(head(df_dens_summary, n = 10))
 ```
 
-| WMUNIT\_NAM  |  Year| common\_name |  occupied|  n\_deployments|  occupancy|  density\_avg|  density\_lci\_0.9|  density\_uci\_0.9|
-|:-------------|-----:|:-------------|---------:|---------------:|----------:|-------------:|------------------:|------------------:|
-| Amisk        |  2014| Moose        |         4|               4|  1.0000000|     4.6282195|          3.4160483|          6.0797204|
-| Amisk        |  2014| Mule deer    |         0|               4|  0.0000000|     0.0000000|          0.0000000|          0.0000000|
-| Amisk        |  2018| Moose        |         6|              15|  0.4000000|     0.5831947|          0.2728063|          0.9338794|
-| Amisk        |  2018| Mule deer    |         1|              15|  0.0666667|     0.0102491|          0.0102491|          0.0102491|
-| Beaver River |  2016| Moose        |         6|              21|  0.2857143|     0.1977091|          0.0854798|          0.3348017|
-| Beaver River |  2016| Mule deer    |         3|              21|  0.1428571|     0.0153613|          0.0040652|          0.0307724|
-| Beaver River |  2017| Moose        |         4|               4|  1.0000000|     1.1013434|          0.6225739|          1.7634510|
-| Beaver River |  2017| Mule deer    |         0|               4|  0.0000000|     0.0000000|          0.0000000|          0.0000000|
-| Beaver River |  2018| Moose        |         6|               9|  0.6666667|     1.7548748|          0.9554239|          2.6823472|
-| Beaver River |  2018| Mule deer    |         0|               9|  0.0000000|     0.0000000|          0.0000000|          0.0000000|
+
+
+|WMUNIT_NAM   | Year|common_name | occupied| n_deployments| occupancy| density_avg| density_lci_0.9| density_uci_0.9|
+|:------------|----:|:-----------|--------:|-------------:|---------:|-----------:|---------------:|---------------:|
+|Amisk        | 2014|Moose       |        4|             4| 1.0000000|   4.6282195|       3.4382457|       6.0480320|
+|Amisk        | 2014|Mule deer   |        0|             4| 0.0000000|   0.0000000|       0.0000000|       0.0000000|
+|Amisk        | 2018|Moose       |        6|            15| 0.4000000|   0.5831947|       0.2748898|       0.9340970|
+|Amisk        | 2018|Mule deer   |        1|            15| 0.0666667|   0.0102491|       0.0102491|       0.0102491|
+|Beaver River | 2016|Moose       |        6|            21| 0.2857143|   0.1977091|       0.0840061|       0.3367199|
+|Beaver River | 2016|Mule deer   |        3|            21| 0.1428571|   0.0153613|       0.0040820|       0.0310880|
+|Beaver River | 2017|Moose       |        4|             4| 1.0000000|   1.1013434|       0.6200309|       1.7654023|
+|Beaver River | 2017|Mule deer   |        0|             4| 0.0000000|   0.0000000|       0.0000000|       0.0000000|
+|Beaver River | 2018|Moose       |        6|             9| 0.6666667|   1.7548748|       0.9765246|       2.6599117|
+|Beaver River | 2018|Mule deer   |        0|             9| 0.0000000|   0.0000000|       0.0000000|       0.0000000|
+
+
+
+
+
+
+

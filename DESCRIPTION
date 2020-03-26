@@ -1,7 +1,7 @@
 Package: abmi.camera.extras
 Type: Package
 Title: Extra functions and data to make use of ABMI camera deployment data
-Version: 0.1.0
+Version: 0.0.0.9000
 Authors@R: c(
   person("Marcus", "Becker", email = "mabecker@ualberta.ca", role = c("aut", "cre")))
 Maintainer: Marcus Becker <mabecker@ualberta.ca>
