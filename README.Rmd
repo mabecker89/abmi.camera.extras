@@ -4,7 +4,7 @@ output:
     html_preview: false
 ---
 
-```{r setup, include=TRUE, echo=FALSE}
+```{r setup, include=TRUE, echo=FALSE, warning=FALSE}
 
 library(knitr)
 # Set knitr chunk options
