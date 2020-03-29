@@ -1,7 +1,7 @@
 #' Summarise animal density within an area of interest
 #'
 #' @param x a dataframe of deployments of interest with associated density estimates
-#' @param group variable to group by if x contains multiple areas; defaults to NULL (for when a single area is supplied)
+#' @param id attribute to group by if x contains multiple areas; defaults to NULL (for when a single area is supplied)
 #' @param agg.years logical; if FALSE, the default, density is summarised by year; if TRUE all years are aggregated
 #' @param conflevel level of confidence for the confidence interval; defaults to 0.9 (90 percent CI)
 #' @import dplyr tidyr sf purrr
@@ -13,20 +13,19 @@
 #' # Example aoi of four Wildlife Management Units (WMUs) in Alberta:
 #' wmu_sample <- st_read(system.file("extdata/wmu_sample.shp", package = "abmi.camera.extras"))
 #' # Obtain ABMI deployments in sample WMUs, keeping unit name
-#' wmu_sample_deployments <- ace_get_cam(wmu_sample, cols = "WMUNIT_NAM")
+#' wmu_sample_deployments <- ace_get_cam(wmu_sample, id = WMUNIT_NAM)
 #' wmu_sample_deployments_dens <- ace_join_dens(wmu_sample_deployments,
-#'                                          species = c("Moose", "Mule deer"),
-#'                                          nest = FALSE)
+#'                                              species = c("Moose", "Mule deer"),
+#'                                              nest = FALSE)
 #' # Summarise density by WMU and year
 #' wmu_densities <- ace_summarise_dens(x = wmu_sample_deployments_dens,
-#'                                 group = WMUNIT_NAM,
-#'                                 agg.years = FALSE,
-#'                                 conflevel = 0.9)
+#'                                     id = WMUNIT_NAM,
+#'                                     agg.years = FALSE,
+#'                                     conflevel = 0.9)
 #' @return A dataframe with estimated density and associated confidence interval
-#' @author Marcus Becker
 
 # Summarise density
-ace_summarise_dens <- function(x, group = NULL, agg.years = FALSE, conflevel = 0.9) {
+ace_summarise_dens <- function(x, id = NULL, agg.years = FALSE, conflevel = 0.9) {
 
   # If present, drop geometry
   if("geometry" %in% names(x)) {
@@ -34,13 +33,13 @@ ace_summarise_dens <- function(x, group = NULL, agg.years = FALSE, conflevel = 0
   }
 
   # Ensure `group` is a column name
-  if(!rlang::quo_is_null(enquo(group))) {
-    group1 <- dplyr::enquo(group)
-    name <- dplyr::quo_name(group1)
+  if(!rlang::quo_is_null(enquo(id))) {
+    id1 <- dplyr::enquo(id)
+    name <- dplyr::quo_name(id1)
     if(!name %in% names(x)) {
       stop("the `group` argument must refer to a column in x")
     }
-    x <- x %>% dplyr::group_by({{ group }})
+    x <- x %>% dplyr::group_by({{ id }})
   } else {
     x
   }
@@ -53,6 +52,7 @@ ace_summarise_dens <- function(x, group = NULL, agg.years = FALSE, conflevel = 0
   }
 
   occupied <- n_deployments <- prop_occupied <- agp <- agp.se <- density_avg <- NULL
+
 
   # Summarise density
   df <- x %>%

@@ -2,34 +2,37 @@
 % Please edit documentation in R/ace_get_cam.R
 \name{ace_get_cam}
 \alias{ace_get_cam}
-\title{Subset ABMI camera deployments by a specified spatial area of interest}
+\title{Subset camera deployments by a specified spatial area of interest}
 \usage{
-ace_get_cam(aoi, cols = NULL)
+ace_get_cam(aoi, id = NULL, dep = NULL, coords = NULL, crs = 4326)
 }
 \arguments{
 \item{aoi}{The area of interest as an sf, sfc, or sp (SpatialPolygonsDataFrame) object}
 
-\item{cols}{character; indicates which columns (attributes) from x to be appended to the deployments dataframe}
+\item{id}{If aoi contains multiple polygons, name of the attribute to be appended to the output dataframe as identifier}
 
-\item{keep.all}{logical; if TRUE all deployments are kept, otherwise only those within x are kept}
+\item{dep}{A dataframe of camera deployment locations as coordinate points; defaults to NULL, in which case ABMI camera deployment locations are used.}
+
+\item{coords}{If dep is specified, names of the of numeric columns holding coordinates}
+
+\item{crs}{coordinate reference system; integer with the EPSG code, or character with proj4string; defaults to 4326.}
 }
 \value{
-a dataframe of deployments within the supplied area of interest
+A dataframe of camera deployments within the supplied area of interest (aoi)
 }
 \description{
-Subset ABMI camera deployments by a specified spatial area of interest
+Subset camera deployments by a specified spatial area of interest
 }
 \examples{
+
 library(sf)
 # Example aoi of four Wildlife Management Units (WMUs) in Alberta:
 wmu_sample <- st_read(system.file("extdata/wmu_sample.shp", package = "abmi.camera.extras"))
 # Obtain ABMI deployments in sample WMUs, keeping unit name
-wmu_sample_deployments <- ace_get_cam(wmu_sample, cols = "WMUNIT_NAM")
+wmu_sample_deployments <- ace_get_cam(wmu_sample, id = WMUNIT_NAM)
 # Plot results
 wmu_sample <- st_transform(wmu_sample, "+init=epsg:4326")
 plot(wmu_sample_deployments$geometry, pch = 21, cex = 0.7, col = "blue", bg = "gray80")
 plot(wmu_sample$geometry, border = "gray20", col = NA, add = TRUE)
-}
-\author{
-Marcus Becker
+
 }

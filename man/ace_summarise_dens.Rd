@@ -4,12 +4,12 @@
 \alias{ace_summarise_dens}
 \title{Summarise animal density within an area of interest}
 \usage{
-ace_summarise_dens(x, group = NULL, agg.years = FALSE, conflevel = 0.9)
+ace_summarise_dens(x, id = NULL, agg.years = FALSE, conflevel = 0.9)
 }
 \arguments{
 \item{x}{a dataframe of deployments of interest with associated density estimates}
 
-\item{group}{variable to group by if x contains multiple areas; defaults to NULL (for when a single area is supplied)}
+\item{id}{attribute to group by if x contains multiple areas; defaults to NULL (for when a single area is supplied)}
 
 \item{agg.years}{logical; if FALSE, the default, density is summarised by year; if TRUE all years are aggregated}
 
@@ -27,16 +27,13 @@ library(sf)
 # Example aoi of four Wildlife Management Units (WMUs) in Alberta:
 wmu_sample <- st_read(system.file("extdata/wmu_sample.shp", package = "abmi.camera.extras"))
 # Obtain ABMI deployments in sample WMUs, keeping unit name
-wmu_sample_deployments <- ace_get_cam(wmu_sample, cols = "WMUNIT_NAM")
+wmu_sample_deployments <- ace_get_cam(wmu_sample, id = WMUNIT_NAM)
 wmu_sample_deployments_dens <- ace_join_dens(wmu_sample_deployments,
-                                         species = c("Moose", "Mule deer"),
-                                         nest = FALSE)
+                                             species = c("Moose", "Mule deer"),
+                                             nest = FALSE)
 # Summarise density by WMU and year
 wmu_densities <- ace_summarise_dens(x = wmu_sample_deployments_dens,
-                                group = WMUNIT_NAM,
-                                agg.years = FALSE,
-                                conflevel = 0.9)
-}
-\author{
-Marcus Becker
+                                    id = WMUNIT_NAM,
+                                    agg.years = FALSE,
+                                    conflevel = 0.9)
 }

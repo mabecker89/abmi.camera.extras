@@ -32,7 +32,6 @@
 #' # Join density estimates (e.g. Moose in 2015)
 #' df_densities <- ace_join_dens(df, species = "Moose", year = "2015", nest = FALSE)
 #' @return Tidy dataframe of deployments in year(s) specified with two appended columns: species and estimated density.
-#' @author Marcus Becker
 
 # Join density estimates
 ace_join_dens <- function(x, species, year, nest = FALSE) {
@@ -70,11 +69,11 @@ ace_join_dens <- function(x, species, year, nest = FALSE) {
   }
 
   # Stop call if species or year is not within range of possible values
-  if(!species %in% sp) {
-    stop("A valid species must be supplied. See ?join_density for list of possible values", call. = TRUE)
+  if(all(!species %in% sp)) {
+    stop("A valid species must be supplied. See ?ace_join_dens for list of possible values", call. = TRUE)
   }
-  if(!year %in% yr) {
-    stop("A valid year must be supplied. See ?join_density for a list of possible values", call. = TRUE)
+  if(all(!year %in% yr)) {
+    stop("A valid year must be supplied. See ?ace_join_dens for a list of possible values", call. = TRUE)
   }
 
   # Subset density by species and year

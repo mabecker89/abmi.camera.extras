@@ -49,6 +49,3 @@ df <- data.frame(Deployment = c("ABMI-633-NE",
 # Join density estimates (e.g. Moose in 2015)
 df_densities <- ace_join_dens(df, species = "Moose", year = "2015", nest = FALSE)
 }
-\author{
-Marcus Becker
-}

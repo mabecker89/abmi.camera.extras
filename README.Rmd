@@ -22,19 +22,43 @@ opts_chunk$set(include=TRUE, echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE)
 
 **Warning: under development!**
 
+## Installation
+
+```{r, include=TRUE, eval=FALSE}
+
+# Install the latest version from Github:
+# install.packages("remotes")
+remotes::install_github("mabecker89/abmi.camera.extras")
+
+```
+
 ## Overview
 
-This package provides access to the Alberta Biodiversity Monitoring Institute's (ABMI) camera-level animal density estimates, which can be used to estimate the density (and associated confidence bounds) of various species in a user-defined area of interest. For more information on how the ABMI estimates animal density from camera data, visit this [repository](https://github.com/ABbiodiversity/mammals-camera) for a detailed explanation and code base.
+This package provides access to the Alberta Biodiversity Monitoring Institute's (ABMI) camera-level animal density estimates, which can be used to estimate the density (and associated confidence bounds) of various species in a user-defined area of interest. For more information on how the ABMI estimates animal density from camera data, please review this [report](https://www.abmi.ca/home/publications/501-550/516) and visit this [repository](https://github.com/ABbiodiversity/mammals-camera) for associated code base.
 
-This package currently contains ABMI camera data from:
+This package currently contains data from ABMI camera deployments in the following years:
 
-+ 2015
-+ 2016
-+ 2017
-+ 2018
-+ 2019 (*coming soon!*)
+```{r, echo = FALSE}
 
-And includes the following species:
+library(abmi.camera.extras)
+library(ggplot2)
+
+data("abmi_deployment_locations")
+
+abmi_deployment_locations %>%
+  mutate(Year = as.factor(Year)) %>%
+  ggplot(aes(x = Year, fill = Year)) +
+  geom_bar(stat = "count", color = "black") +
+  theme_minimal() +
+  scale_fill_brewer(palette = "Dark2", direction = -1) +
+  labs(x = "",
+       y = "",
+       title = "Number of ABMI Camera Deployments By Sampling Year") +
+  theme(legend.position = "none")
+
+```
+
+This data includes density information on the following species:
 
 + White-tailed Deer
 + Mule deer
@@ -50,20 +74,9 @@ And includes the following species:
 
 Current (as of 2018) geographic coverage of sampling in the province can be seen in the map below:
 
-```{r echo=FALSE, out.width="65%", fig.align="center"}
+```{r echo=FALSE, out.width="45%", fig.align="center"}
 
 knitr::include_graphics("./man/figures/map_deployments.png")
-
-```
-
-## Installation
-
-```{r, include=TRUE, eval=FALSE}
-
-# Install the latest version from Github:
-# install.packages("remotes")
-
-remotes::install_github("mabecker89/abmi.camera.extras")
 
 ```
 
@@ -72,7 +85,7 @@ remotes::install_github("mabecker89/abmi.camera.extras")
 The primary objective of this package is to allow users to estimate the density of a species of interest in an area of interest. For this objective, three steps are neccessary:
 
 + Spatially subset ABMI camera deployments by a user-supplied area of interest (or multiple);
-+ Join pre-processed individual deployment density estimates to the this spatial subset;
++ Join pre-processed individual deployment density estimates to this spatial subset of cameras;
 + Summarise density for the area of interest as a whole, including confidence bounds.
 
 ## Usage
@@ -82,14 +95,15 @@ The primary objective of this package is to allow users to estimate the density 
 # Load package
 library(abmi.camera.extras)
 
-# Load packages for working with spatial data
+# Load packages for working with spatial data and plotting results
 library(sf)
 # Note: sp objects will also work.
 # library(sp)
+library(ggplot2)
 
 ```
 
-The first step is to define an area of interest, such as a Wildlife Management Unit, Municipality, Land Use Planning Region, etc. Below, this is done using the `sf` package to read in a shapefile of four WMUs - Crow Lake (code 512), Lac La Biche (503), Beaver River (502), and Amisk (504) - all of which are located in the central-east part of Alberta. 
+The first step is to define an area of interest, such as a Wildlife Management Unit, Municipality, Land Use Planning Region, etc. Below, this is done using the `sf` package to read into R a shapefile of four WMUs - Crow Lake (code 512), Lac La Biche (503), Beaver River (502), and Amisk (504) - all of which are located in the central-east part of Alberta. 
 
 ```{r}
 
@@ -107,7 +121,8 @@ Next, we subset ABMI camera deployments spatially with the `ace_get_cam()` funct
 
 # Retrieve deployments in aoi as dataframe
 df_deployments <- ace_get_cam(aoi = sf_wmu,
-                          cols = "WMUNIT_NAM") # Maintain WMU name attribute in output
+                              id = WMUNIT_NAM, # Use `id` to define identifier (e.g. WMU name)
+                              crs = 4326) # (Re)Project using the `crs` argument
 
 # Plot deployments
 sf_wmu <- st_transform(sf_wmu, "+init=epsg:4326")
@@ -124,11 +139,24 @@ From here we can join density estimates for a species of interest in a given yea
 
 # Join density
 df_dens <- ace_join_dens(x = df_deployments,
-                     species = c("Moose", "Mule deer"), # See ?ace_join_dens for list of available species
-                     # year = "2018" option to define specific year if desired
-                     nest = FALSE)
+                         species = c("Moose", "White-tailed Deer"), # See ?ace_join_dens for list of available species
+                         # year = "2018", option to define specific year if desired
+                         nest = FALSE)
+
+# View distribution
+ggplot(df_dens, aes(x = density, fill = WMUNIT_NAM)) +
+  geom_histogram(bins = 15) +
+  coord_cartesian(ylim = c(0,30)) +
+  facet_grid(common_name ~ WMUNIT_NAM) +
+  theme_minimal() +
+  labs(x = expression(Density~(individuals~per~km^2)),
+       y = "Number of Deployments",
+       title = "Distribution in estimated moose and white-tailed deer density among\nABMI camera deployments in four WMUs.") +
+  theme(legend.position = "none")
 
 ```
+
+The distribution is typically right-skewed, with most cameras not detecting any individuals (0 density), some who detect a small number of individuals just passing by (low density), and a few who capture longer periods of animal activity (high density). 
 
 The last step is to estimate the density of each of the species defined previously in the area of the interest, which can be done with the `ace_summarise_dens()` function.
 
@@ -141,13 +169,13 @@ The output is a dataframe with the following attributes (beside the grouping var
 + `density_lci` - lower bounds of confidence interval (level specified in `conflevel` attribute)
 + `density_uci` - upper bounds of confidence interval
 
-The precision of the density estimate is estimated using the [delta method](https://en.wikipedia.org/wiki/Delta_method).
+The precision of the density estimate is estimated using the [delta method](https://en.wikipedia.org/wiki/Delta_method). Note that some ABMI camera deployments are set up with a lure; the subsequent density estimates have been adjusted to facilitate comparison with non-lured estimates.
 
 ```{r}
 
 # Summarise density
 df_dens_summary <- ace_summarise_dens(x = df_dens,
-                                      group = WMUNIT_NAM, # to group deployments when evaluating multiple aoi
+                                      id = WMUNIT_NAM, # to group deployments when evaluating multiple aoi
                                       agg.years = FALSE, # option to aggregate years together
                                       conflevel = 0.9) # for confidence interval - default 90%
 
@@ -158,13 +186,14 @@ Note that this family of three functions is designed to work with a [pipeline-ba
 ```{r}
 
 df_dens_summary <- sf_wmu %>%
-  ace_get_cam(cols = "WMUNIT_NAM") %>%
-  ace_join_dens(species = c("Moose", "Mule deer")) %>%
-  ace_summarise_dens(group = WMUNIT_NAM, agg.years = FALSE, conflevel = 0.9)
+  ace_get_cam(id = WMUNIT_NAM) %>%
+  ace_join_dens(species = c("Moose", "White-tailed Deer")) %>%
+  ace_summarise_dens(id = WMUNIT_NAM, agg.years = FALSE, conflevel = 0.9)
 
 knitr::kable(head(df_dens_summary, n = 10))
 
 ```
+
 
 
 

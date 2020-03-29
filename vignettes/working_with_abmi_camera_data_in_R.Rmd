@@ -36,7 +36,7 @@ library(sf)
 wmu_sample <- st_read(system.file("extdata/wmu_sample.shp", package = "abmi.camera.extras"))
 
 # Find deployments in aoi
-wmu_sample_deployments <- get_cam(wmu_sample, cols = "WMUNIT_NAM", keep.all = FALSE)
+wmu_sample_deployments <- ace_get_cam(wmu_sample, id = WMUNIT_NAM)
 
 ```
 
@@ -45,7 +45,7 @@ From here we can join density estimates for a species of interest in a given yea
 ```{r}
 
 # Join density
-df_density <- join_dens(wmu_sample_deployments, species = c("Moose", "Mule deer"), nest = FALSE)
+df_density <- ace_join_dens(wmu_sample_deployments, species = c("Moose", "White-tailed Deer"), nest = FALSE)
 
 ```
 
@@ -53,7 +53,7 @@ Next, we estimate the density of each species within each WMU.
 
 ```{r}
 
-df_density_summary <- summarise_dens(df_density, group = WMUNIT_NAM, agg.years = FALSE, conflevel = 0.9)
+df_density_summary <- ace_summarise_dens(df_density, id = WMUNIT_NAM, agg.years = FALSE, conflevel = 0.9)
 
 df_density_summary
 
