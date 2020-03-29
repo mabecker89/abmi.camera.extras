@@ -37,7 +37,7 @@
 ace_join_dens <- function(x, species, year, nest = FALSE) {
 
   # Prepare density data
-  data("density", envir = environment())
+  data("density_adj", envir = environment())
 
   # Possible species
   sp <- c("White-tailed Deer",
@@ -77,12 +77,13 @@ ace_join_dens <- function(x, species, year, nest = FALSE) {
   }
 
   # Subset density by species and year
-  d <- density %>% dplyr::filter(common_name %in% species,
+  d <- density_adj %>% dplyr::filter(common_name %in% species,
                                  Year %in% year)
 
   df <- x %>%
     dplyr::left_join(d, by = c("Deployment", "Year")) %>%
-    dplyr::filter(!is.na(density))
+    dplyr::filter(!is.na(density_adj)) %>%
+    dplyr::rename(density = density_adj)
 
 
   # Nesting

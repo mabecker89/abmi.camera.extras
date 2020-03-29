@@ -53,7 +53,6 @@ ace_summarise_dens <- function(x, id = NULL, agg.years = FALSE, conflevel = 0.9)
 
   occupied <- n_deployments <- prop_occupied <- agp <- agp.se <- density_avg <- NULL
 
-
   # Summarise density
   df <- x %>%
     dplyr::summarise(

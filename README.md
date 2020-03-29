@@ -50,12 +50,12 @@ Features
 
 The primary objective of this package is to allow users to estimate the density of a species of interest in an area of interest. For this objective, three steps are neccessary:
 
--   Spatially subset ABMI camera deployments by a user-supplied area of interest (or multiple);
--   Join pre-processed individual deployment density estimates to this spatial subset of cameras;
--   Summarise density for the area of interest as a whole, including confidence bounds.
+1.  Spatially subset ABMI camera deployments by a user-supplied area of interest (or multiple);
+2.  Join pre-processed individual deployment density estimates to this spatial subset of cameras;
+3.  Summarise density for the area of interest as a whole, including confidence bounds.
 
-Usage
------
+Usage and Recommended Workflow
+------------------------------
 
 ``` r
 # Load package
@@ -93,7 +93,7 @@ Next, we subset ABMI camera deployments spatially with the `ace_get_cam()` funct
 # Retrieve deployments in aoi as dataframe
 df_deployments <- ace_get_cam(aoi = sf_wmu,
                               id = WMUNIT_NAM, # Use `id` to define identifier (e.g. WMU name)
-                              crs = 4326) # (Re)Project using the `crs` argument
+                              crs = 4326) # If desired, (re)project using the `crs` argument
 
 # Plot deployments
 sf_wmu <- st_transform(sf_wmu, "+init=epsg:4326")
@@ -113,24 +113,21 @@ df_dens <- ace_join_dens(x = df_deployments,
                          species = c("Moose", "White-tailed Deer"), # See ?ace_join_dens for list of available species
                          # year = "2018", option to define specific year if desired
                          nest = FALSE)
-
-# View distribution
-ggplot(df_dens, aes(x = density, fill = WMUNIT_NAM)) +
-  geom_histogram(bins = 15) +
-  coord_cartesian(ylim = c(0,30)) +
-  facet_grid(common_name ~ WMUNIT_NAM) +
-  theme_minimal() +
-  labs(x = expression(Density~(individuals~per~km^2)),
-       y = "Number of Deployments",
-       title = "Distribution in estimated moose and white-tailed deer density among\nABMI camera deployments in four WMUs.") +
-  theme(legend.position = "none")
 ```
-
-![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 The distribution is typically right-skewed, with most cameras not detecting any individuals (0 density), some who detect a small number of individuals just passing by (low density), and a few who capture longer periods of animal activity (high density).
 
+![](README_files/figure-markdown_github/unnamed-chunk-8-1.png)
+
 The last step is to estimate the density of each of the species defined previously in the area of the interest, which can be done with the `ace_summarise_dens()` function.
+
+``` r
+# Summarise density
+df_dens_summary <- ace_summarise_dens(x = df_dens,
+                                      id = WMUNIT_NAM, # to group deployments when evaluating multiple aoi
+                                      agg.years = FALSE, # option to aggregate years together
+                                      conflevel = 0.9) # for confidence interval - default 90%
+```
 
 The output is a dataframe with the following attributes (beside the grouping variable, year, and species):
 
@@ -141,15 +138,7 @@ The output is a dataframe with the following attributes (beside the grouping var
 -   `density_lci` - lower bounds of confidence interval (level specified in `conflevel` attribute)
 -   `density_uci` - upper bounds of confidence interval
 
-The precision of the density estimate is estimated using the [delta method](https://en.wikipedia.org/wiki/Delta_method). Note that some ABMI camera deployments are set up with a lure; the subsequent density estimates have been adjusted to facilitate comparison with non-lured estimates.
-
-``` r
-# Summarise density
-df_dens_summary <- ace_summarise_dens(x = df_dens,
-                                      id = WMUNIT_NAM, # to group deployments when evaluating multiple aoi
-                                      agg.years = FALSE, # option to aggregate years together
-                                      conflevel = 0.9) # for confidence interval - default 90%
-```
+The precision of the density estimate is estimated using the [delta method](https://en.wikipedia.org/wiki/Delta_method). Note that some ABMI camera deployments are set up with a lure; the subsequent density estimates have been adjusted to facilitate comparison with non-lured estimates when summarising animal density for an aoi.
 
 Note that this family of three functions is designed to work with a [pipeline-based workflow](https://r4ds.had.co.nz/pipes.html), and can be re-written in the following way:
 
@@ -164,13 +153,25 @@ knitr::kable(head(df_dens_summary, n = 10))
 
 | WMUNIT\_NAM  |  Year| common\_name      |  occupied|  n\_deployments|  prop\_occupied|  density\_avg|  density\_lci\_0.9|  density\_uci\_0.9|
 |:-------------|-----:|:------------------|---------:|---------------:|---------------:|-------------:|------------------:|------------------:|
-| Amisk        |  2014| Moose             |         4|               4|       1.0000000|     4.6282195|          3.4234759|          6.0469834|
-| Amisk        |  2014| White-tailed Deer |         4|               4|       1.0000000|     0.2752749|          0.1866194|          0.3852040|
-| Amisk        |  2018| Moose             |         6|              15|       0.4000000|     0.5831947|          0.2748824|          0.9378035|
-| Amisk        |  2018| White-tailed Deer |        11|              15|       0.7333333|     1.8412955|          1.2673361|          2.4631524|
-| Beaver River |  2016| Moose             |         6|              21|       0.2857143|     0.1977091|          0.0837094|          0.3381970|
-| Beaver River |  2016| White-tailed Deer |        17|              21|       0.8095238|     1.1402390|          0.9114102|          1.3609102|
-| Beaver River |  2017| Moose             |         4|               4|       1.0000000|     1.1013434|          0.6216468|          1.7579207|
-| Beaver River |  2017| White-tailed Deer |         4|               4|       1.0000000|     1.4257524|          1.3060968|          1.5551747|
-| Beaver River |  2018| Moose             |         6|               9|       0.6666667|     1.7548748|          0.9591246|          2.6520644|
-| Beaver River |  2018| White-tailed Deer |         6|               9|       0.6666667|     1.2263051|          0.6486659|          1.9152511|
+| Amisk        |  2014| Moose             |         4|               4|       1.0000000|     4.6282195|          3.4203272|          6.0796997|
+| Amisk        |  2014| White-tailed Deer |         4|               4|       1.0000000|     0.2752749|          0.1873050|          0.3844241|
+| Amisk        |  2018| Moose             |         6|              15|       0.4000000|     0.5831947|          0.2734368|          0.9352914|
+| Amisk        |  2018| White-tailed Deer |        11|              15|       0.7333333|     1.8412955|          1.2688330|          2.4583812|
+| Beaver River |  2016| Moose             |         6|              21|       0.2857143|     0.1977091|          0.0831338|          0.3324240|
+| Beaver River |  2016| White-tailed Deer |        17|              21|       0.8095238|     1.1402390|          0.9151855|          1.3541503|
+| Beaver River |  2017| Moose             |         4|               4|       1.0000000|     1.1013434|          0.6200898|          1.7681708|
+| Beaver River |  2017| White-tailed Deer |         4|               4|       1.0000000|     1.4257524|          1.3049039|          1.5544319|
+| Beaver River |  2018| Moose             |         6|               9|       0.6666667|     1.7548748|          0.9613376|          2.6496667|
+| Beaver River |  2018| White-tailed Deer |         6|               9|       0.6666667|     1.2263051|          0.6556373|          1.9165776|
+
+License
+-------
+
+The estimates, predictions, and related documentation are © ABMI (2013-2018) under a [CC BY-SA 4.0 license](https://creativecommons.org/licenses/by-sa/4.0/).
+
+This R package is licensed under [MIT license](https://github.com/mabecker89/abmi.camera.extras/blob/master/LICENSE) © 2020 Marcus Becker, David Huggard, and the ABMI.
+
+Issues
+------
+
+To report bugs, request additional features, or get help using the package, please file an [issue](https://github.com/mabecker89/abmi.camera.extras/issues). You can also email Marcus Becker <mabecker@ualberta.ca>.

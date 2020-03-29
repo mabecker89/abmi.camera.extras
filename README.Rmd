@@ -46,16 +46,23 @@ library(dplyr)
 
 data("abmi_deployment_locations")
 
-abmi_deployment_locations %>%
+p <- abmi_deployment_locations %>%
   mutate(Year = as.factor(Year)) %>%
   ggplot(aes(x = Year, fill = Year)) +
   geom_bar(stat = "count", color = "black") +
   theme_minimal() +
   scale_fill_brewer(palette = "Dark2", direction = -1) +
+  scale_y_continuous(breaks = seq(0,800,200), limits = c(0,800)) +
   labs(x = "",
        y = "",
        title = "Number of ABMI Camera Deployments By Sampling Year") +
-  theme(legend.position = "none")
+  theme(legend.position = "none",
+        axis.text.x = element_text(size = 12, face = "bold"),
+        panel.grid.major.x = element_blank())
+
+p_dat <- layer_data(p)
+
+p + annotate(geom = "text", label = p_dat$count, x = p_dat$x, y = p_dat$y + 30)
 
 ```
 
@@ -85,11 +92,11 @@ knitr::include_graphics("./man/figures/map_deployments.png")
 
 The primary objective of this package is to allow users to estimate the density of a species of interest in an area of interest. For this objective, three steps are neccessary:
 
-+ Spatially subset ABMI camera deployments by a user-supplied area of interest (or multiple);
-+ Join pre-processed individual deployment density estimates to this spatial subset of cameras;
-+ Summarise density for the area of interest as a whole, including confidence bounds.
+1. Spatially subset ABMI camera deployments by a user-supplied area of interest (or multiple);
+1. Join pre-processed individual deployment density estimates to this spatial subset of cameras;
+1. Summarise density for the area of interest as a whole, including confidence bounds.
 
-## Usage
+## Usage and Recommended Workflow
 
 ```{r}
 
@@ -123,7 +130,7 @@ Next, we subset ABMI camera deployments spatially with the `ace_get_cam()` funct
 # Retrieve deployments in aoi as dataframe
 df_deployments <- ace_get_cam(aoi = sf_wmu,
                               id = WMUNIT_NAM, # Use `id` to define identifier (e.g. WMU name)
-                              crs = 4326) # (Re)Project using the `crs` argument
+                              crs = 4326) # If desired, (re)project using the `crs` argument
 
 # Plot deployments
 sf_wmu <- st_transform(sf_wmu, "+init=epsg:4326")
@@ -144,6 +151,11 @@ df_dens <- ace_join_dens(x = df_deployments,
                          # year = "2018", option to define specific year if desired
                          nest = FALSE)
 
+```
+
+The distribution is typically right-skewed, with most cameras not detecting any individuals (0 density), some who detect a small number of individuals just passing by (low density), and a few who capture longer periods of animal activity (high density).
+
+``` {r echo=FALSE}
 # View distribution
 ggplot(df_dens, aes(x = density, fill = WMUNIT_NAM)) +
   geom_histogram(bins = 15) +
@@ -157,20 +169,7 @@ ggplot(df_dens, aes(x = density, fill = WMUNIT_NAM)) +
 
 ```
 
-The distribution is typically right-skewed, with most cameras not detecting any individuals (0 density), some who detect a small number of individuals just passing by (low density), and a few who capture longer periods of animal activity (high density). 
-
 The last step is to estimate the density of each of the species defined previously in the area of the interest, which can be done with the `ace_summarise_dens()` function.
-
-The output is a dataframe with the following attributes (beside the grouping variable, year, and species):
-
-+ `occupied` - number of deployments with a individual of that species present
-+ `n_deployments` - total number of deployments
-+ `prop_occupied` - proportion of deployments occupied
-+ `density_avg` - estimated density for the area/year/species combination
-+ `density_lci` - lower bounds of confidence interval (level specified in `conflevel` attribute)
-+ `density_uci` - upper bounds of confidence interval
-
-The precision of the density estimate is estimated using the [delta method](https://en.wikipedia.org/wiki/Delta_method). Note that some ABMI camera deployments are set up with a lure; the subsequent density estimates have been adjusted to facilitate comparison with non-lured estimates.
 
 ```{r}
 
@@ -181,6 +180,17 @@ df_dens_summary <- ace_summarise_dens(x = df_dens,
                                       conflevel = 0.9) # for confidence interval - default 90%
 
 ```
+
+The output is a dataframe with the following attributes (beside the grouping variable, year, and species):
+
++ `occupied` - number of deployments with a individual of that species present
++ `n_deployments` - total number of deployments
++ `prop_occupied` - proportion of deployments occupied
++ `density_avg` - estimated density for the area/year/species combination
++ `density_lci` - lower bounds of confidence interval (level specified in `conflevel` attribute)
++ `density_uci` - upper bounds of confidence interval
+
+The precision of the density estimate is estimated using the [delta method](https://en.wikipedia.org/wiki/Delta_method). Note that some ABMI camera deployments are set up with a lure; the subsequent density estimates have been adjusted to facilitate comparison with non-lured estimates when summarising animal density for an aoi. 
 
 Note that this family of three functions is designed to work with a [pipeline-based workflow](https://r4ds.had.co.nz/pipes.html), and can be re-written in the following way:
 
@@ -195,7 +205,15 @@ knitr::kable(head(df_dens_summary, n = 10))
 
 ```
 
+## License 
 
+The estimates, predictions, and related documentation are © ABMI (2013-2018) under a [CC BY-SA 4.0 license](https://creativecommons.org/licenses/by-sa/4.0/).
+
+This R package is licensed under [MIT license](https://github.com/mabecker89/abmi.camera.extras/blob/master/LICENSE) © 2020 Marcus Becker, David Huggard, and the ABMI.
+
+## Issues
+
+To report bugs, request additional features, or get help using the package, please file an [issue](https://github.com/mabecker89/abmi.camera.extras/issues). You can also email Marcus Becker mabecker@ualberta.ca. 
 
 
 
