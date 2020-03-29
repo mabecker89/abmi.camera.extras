@@ -38,10 +38,11 @@ This package provides access to the Alberta Biodiversity Monitoring Institute's 
 
 This package currently contains data from ABMI camera deployments in the following years:
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, fig.height=4}
 
 library(abmi.camera.extras)
 library(ggplot2)
+library(dplyr)
 
 data("abmi_deployment_locations")
 
