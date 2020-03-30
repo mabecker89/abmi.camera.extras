@@ -4,13 +4,15 @@
 \name{density}
 \alias{density}
 \title{Mammal density estimations at ABMI deployments}
-\format{A data.frame with 4 columns
+\format{
+A data.frame with 4 columns
 \describe{
 \item{Deployment}{The camera deployment ID. Format is <Project Code>-<Site>-<Station>, e.g. ABMI-1-NE.}
 \item{Year}{The year that the camera was deployed.}
 \item{common_name}{The species common name.}
 \item{density}{Estimated density in individuals per km-square}
-}}
+}
+}
 \source{
 Alberta Biodiversity Monitoring Institute
 }

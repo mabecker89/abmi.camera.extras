@@ -13,12 +13,12 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: 
-    dplyr,
-    sf,
+    dplyr (>= 0.8.5),
     methods,
-    tidyr,
-    rlang,
-    purrr
+    purrr (>= 0.3.3),
+    rlang (>= 0.4.5),
+    sf (>= 0.9-0),
+    tidyr (>= 1.0.2)
 Suggests: 
     knitr,
     rmarkdown,
@@ -26,4 +26,4 @@ Suggests:
 VignetteBuilder: knitr
 URL: https://github.com/mabecker89/abmi.camera.extras
 BugReports: https://github.com/mabecker89/abmi.camera.extras/issues
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
