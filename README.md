@@ -8,7 +8,7 @@ output:
 
 # abmi.camera.extras
 
-> Functions for using ABMI camera data to estimate animal density in an area of interest
+> Functions for using ABMI camera data to estimate animal density in an area of interest.
 
 <!-- badges: start -->
 [![Travis build status](https://travis-ci.org/mabecker89/abmi.camera.extras.svg?branch=master)](https://travis-ci.org/mabecker89/abmi.camera.extras)
@@ -167,16 +167,16 @@ knitr::kable(head(df_dens_summary, n = 10))
 
 |WMUNIT_NAM   | Year|common_name       | occupied| n_deployments| prop_occupied| density_avg| density_lci_0.9| density_uci_0.9|
 |:------------|----:|:-----------------|--------:|-------------:|-------------:|-----------:|---------------:|---------------:|
-|Amisk        | 2014|Moose             |        4|             4|     1.0000000|   4.0651097|       3.0820413|       5.2376116|
-|Amisk        | 2014|White-tailed Deer |        4|             4|     1.0000000|   0.2804053|       0.1897704|       0.3946967|
-|Amisk        | 2018|Moose             |        6|            15|     0.4000000|   0.5113879|       0.2372165|       0.8224746|
-|Amisk        | 2018|White-tailed Deer |       11|            15|     0.7333333|   1.8739315|       1.2926935|       2.4890272|
-|Beaver River | 2016|Moose             |        6|            21|     0.2857143|   0.1682201|       0.0714797|       0.2826980|
-|Beaver River | 2016|White-tailed Deer |       17|            21|     0.8095238|   1.1625098|       0.9327284|       1.3835823|
-|Beaver River | 2017|Moose             |        4|             4|     1.0000000|   0.9331167|       0.5482670|       1.4530801|
-|Beaver River | 2017|White-tailed Deer |        4|             4|     1.0000000|   1.4475633|       1.3318144|       1.5691199|
-|Beaver River | 2018|Moose             |        6|             9|     0.6666667|   1.5955008|       0.8493681|       2.4650502|
-|Beaver River | 2018|White-tailed Deer |        6|             9|     0.6666667|   1.2479091|       0.6652393|       1.9519171|
+|Amisk        | 2014|Moose             |        4|             4|     1.0000000|   4.0651097|       3.0908916|       5.1995571|
+|Amisk        | 2014|White-tailed Deer |        4|             4|     1.0000000|   0.2804053|       0.1908249|       0.3935950|
+|Amisk        | 2018|Moose             |        6|            15|     0.4000000|   0.5113879|       0.2385872|       0.8184304|
+|Amisk        | 2018|White-tailed Deer |       11|            15|     0.7333333|   1.8739315|       1.2934694|       2.5000615|
+|Beaver River | 2016|Moose             |        6|            21|     0.2857143|   0.1682201|       0.0738061|       0.2830194|
+|Beaver River | 2016|White-tailed Deer |       17|            21|     0.8095238|   1.1625098|       0.9301273|       1.3857766|
+|Beaver River | 2017|Moose             |        4|             4|     1.0000000|   0.9331167|       0.5388954|       1.4585468|
+|Beaver River | 2017|White-tailed Deer |        4|             4|     1.0000000|   1.4475633|       1.3314142|       1.5653511|
+|Beaver River | 2018|Moose             |        6|             9|     0.6666667|   1.5955008|       0.8653895|       2.4692786|
+|Beaver River | 2018|White-tailed Deer |        6|             9|     0.6666667|   1.2479091|       0.6595081|       1.9434907|
 
 ## License 
 
