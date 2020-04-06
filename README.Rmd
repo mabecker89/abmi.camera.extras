@@ -14,7 +14,7 @@ opts_chunk$set(include=TRUE, echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE)
 
 # abmi.camera.extras
 
-> Functions for using ABMI camera data to estimate animal density
+> Functions for using ABMI camera data to estimate animal density in an area of interest.
 
 <!-- badges: start -->
 [![Travis build status](https://travis-ci.org/mabecker89/abmi.camera.extras.svg?branch=master)](https://travis-ci.org/mabecker89/abmi.camera.extras)
