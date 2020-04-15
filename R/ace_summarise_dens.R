@@ -1,8 +1,11 @@
 #' Summarise animal density within an area of interest
 #'
 #' @param x a dataframe of deployments of interest with associated density estimates
-#' @param id attribute to group by if x contains multiple areas; defaults to NULL (for when a single area is supplied)
-#' @param agg.years logical; if FALSE, the default, density is summarised by year; if TRUE all years are aggregated
+#' @param group_id column name (variable) to group by if x contains multiple areas; defaults to NULL (for when a single area is supplied)
+#' @param agg_samp_per logical; if FALSE, the default, density is summarised by sampling period; if TRUE, all sampling periods are aggregated
+#' @param samp_per_col column name holding sampling period id; defaults to 'samp_per'; not required if agg_samp_per is set to TRUE
+#' @param species_col column name holding species id; defaults to 'common_name'
+#' @param dens_col column name holding density values for individual camera deployments; defaults to 'density'
 #' @param conflevel level of confidence for the confidence interval; defaults to 0.9 (90 percent CI)
 #' @import dplyr tidyr sf purrr
 #' @importFrom rlang quo_is_null .data
@@ -13,42 +16,55 @@
 #' # Example aoi of four Wildlife Management Units (WMUs) in Alberta:
 #' wmu_sample <- st_read(system.file("extdata/wmu_sample.shp", package = "abmi.camera.extras"))
 #' # Obtain ABMI deployments in sample WMUs, keeping unit name
-#' wmu_sample_deployments <- ace_get_cam(wmu_sample, id = WMUNIT_NAM)
+#' wmu_sample_deployments <- ace_get_cam(wmu_sample, group_id = WMUNIT_NAM)
 #' wmu_sample_deployments_dens <- ace_join_dens(wmu_sample_deployments,
 #'                                              species = c("Moose", "Mule deer"),
 #'                                              nest = FALSE)
-#' # Summarise density by WMU and year
+#' # Summarise density by WMU and sampling period
 #' wmu_densities <- ace_summarise_dens(x = wmu_sample_deployments_dens,
-#'                                     id = WMUNIT_NAM,
-#'                                     agg.years = FALSE,
+#'                                     group_id = WMUNIT_NAM,
+#'                                     agg_samp_per = FALSE,
 #'                                     conflevel = 0.9)
-#' @return A dataframe with estimated density and associated confidence interval
+#' @return A dataframe with estimated density by species, area, and sampling period, along with associated confidence interval
 
 # Summarise density
-ace_summarise_dens <- function(x, id = NULL, agg.years = FALSE, conflevel = 0.9) {
+ace_summarise_dens <- function(x,
+                               group_id = NULL,
+                               agg_samp_per = FALSE,
+                               samp_per_col = samp_per,
+                               species_col = common_name,
+                               dens_col = density,
+                               conflevel = 0.9) {
 
   # If present, drop geometry
   if("geometry" %in% names(x)) {
     x <- sf::st_set_geometry(x, NULL)
   }
 
-  # Ensure `group` is a column name
-  if(!rlang::quo_is_null(enquo(id))) {
-    id1 <- dplyr::enquo(id)
-    name <- dplyr::quo_name(id1)
-    if(!name %in% names(x)) {
-      stop("the `group` argument must refer to a column in x")
+  # Ensure `group_id` is a column name, and group if supplied
+  if(!rlang::quo_is_null(enquo(group_id))) {
+    gr_id <- dplyr::enquo(group_id) %>% dplyr::quo_name()
+    if(!gr_id %in% names(x)) {
+      stop("the `group_id` argument must refer to a column in x")
     }
-    x <- x %>% dplyr::group_by({{ id }})
+    x <- x %>% dplyr::group_by({{ group_id }})
   } else {
     x
   }
 
-  # Option to aggregate years
-  if(agg.years == TRUE) {
-    x <- x %>% dplyr::group_by(common_name, add = TRUE)
+  # Ensure `samp_per_col`, `species_col`, and `dens_col` are column names
+  spc <- dplyr::enquo(samp_per_col) %>% dplyr::quo_name()
+  sc <- dplyr::enquo(species_col) %>% dplyr::quo_name()
+  dc <- dplyr::enquo(dens_col) %>% dplyr::quo_name()
+  if(!(spc %in% names(x) & sc %in% names(x) & dc %in% names(x))) {
+    stop("the `samp_per_col`, `species_col`, and `dens_col` arguments must all refer to columns in x")
+  }
+
+  # Option to aggregate sampling periods
+  if(agg_samp_per == TRUE) {
+    x <- x %>% dplyr::group_by({{ species_col }}, add = TRUE)
   } else {
-    x <- x %>% dplyr::group_by(Year, common_name, add = TRUE)
+    x <- x %>% dplyr::group_by({{ samp_per_col }}, {{ species_col }}, add = TRUE)
   }
 
   occupied <- n_deployments <- prop_occupied <- agp <- agp.se <- density_avg <- NULL
@@ -56,11 +72,11 @@ ace_summarise_dens <- function(x, id = NULL, agg.years = FALSE, conflevel = 0.9)
   # Summarise density
   df <- x %>%
     dplyr::summarise(
-      occupied = sum(density > 0, na.rm = TRUE),
+      occupied = sum({{ dens_col }} > 0, na.rm = TRUE),
       n_deployments = dplyr::n(),
       prop_occupied = occupied / n_deployments,
-      agp = mean(density[density > 0]),
-      agp.se = sd(density[density > 0]) / sqrt(occupied)) %>%
+      agp = mean({{ dens_col }}[{{ dens_col }} > 0]),
+      agp.se = sd({{ dens_col }}[{{ dens_col }} > 0]) / sqrt(occupied)) %>%
     dplyr::mutate(
       agp = ifelse(agp == "NaN", 0, agp),
       density_avg = prop_occupied * agp)
@@ -69,7 +85,7 @@ ace_summarise_dens <- function(x, id = NULL, agg.years = FALSE, conflevel = 0.9)
 
   # Simulate for CI
   df <- df %>%
-    dplyr::group_by(common_name, add = TRUE) %>%
+    dplyr::group_by({{ species_col }}, add = TRUE) %>%
     tidyr::nest() %>%
     dplyr::mutate(
       agp.se = purrr::map(.x = data, .f = ~ purrr::pluck(.x[["agp.se"]])),

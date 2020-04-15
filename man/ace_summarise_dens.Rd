@@ -4,19 +4,33 @@
 \alias{ace_summarise_dens}
 \title{Summarise animal density within an area of interest}
 \usage{
-ace_summarise_dens(x, id = NULL, agg.years = FALSE, conflevel = 0.9)
+ace_summarise_dens(
+  x,
+  group_id = NULL,
+  agg_samp_per = FALSE,
+  samp_per_col = samp_per,
+  species_col = common_name,
+  dens_col = density,
+  conflevel = 0.9
+)
 }
 \arguments{
 \item{x}{a dataframe of deployments of interest with associated density estimates}
 
-\item{id}{attribute to group by if x contains multiple areas; defaults to NULL (for when a single area is supplied)}
+\item{group_id}{column name (variable) to group by if x contains multiple areas; defaults to NULL (for when a single area is supplied)}
 
-\item{agg.years}{logical; if FALSE, the default, density is summarised by year; if TRUE all years are aggregated}
+\item{agg_samp_per}{logical; if FALSE, the default, density is summarised by sampling period; if TRUE, all sampling periods are aggregated}
+
+\item{samp_per_col}{column name holding sampling period id; defaults to 'samp_per'; not required if agg_samp_per is set to TRUE}
+
+\item{species_col}{column name holding species id; defaults to 'common_name'}
+
+\item{dens_col}{column name holding density values for individual camera deployments; defaults to 'density'}
 
 \item{conflevel}{level of confidence for the confidence interval; defaults to 0.9 (90 percent CI)}
 }
 \value{
-A dataframe with estimated density and associated confidence interval
+A dataframe with estimated density by species, area, and sampling period, along with associated confidence interval
 }
 \description{
 Summarise animal density within an area of interest
@@ -27,13 +41,13 @@ library(sf)
 # Example aoi of four Wildlife Management Units (WMUs) in Alberta:
 wmu_sample <- st_read(system.file("extdata/wmu_sample.shp", package = "abmi.camera.extras"))
 # Obtain ABMI deployments in sample WMUs, keeping unit name
-wmu_sample_deployments <- ace_get_cam(wmu_sample, id = WMUNIT_NAM)
+wmu_sample_deployments <- ace_get_cam(wmu_sample, group_id = WMUNIT_NAM)
 wmu_sample_deployments_dens <- ace_join_dens(wmu_sample_deployments,
                                              species = c("Moose", "Mule deer"),
                                              nest = FALSE)
-# Summarise density by WMU and year
+# Summarise density by WMU and sampling period
 wmu_densities <- ace_summarise_dens(x = wmu_sample_deployments_dens,
-                                    id = WMUNIT_NAM,
-                                    agg.years = FALSE,
+                                    group_id = WMUNIT_NAM,
+                                    agg_samp_per = FALSE,
                                     conflevel = 0.9)
 }

@@ -4,12 +4,12 @@
 \alias{ace_get_cam}
 \title{Subset camera deployments by a specified spatial area of interest}
 \usage{
-ace_get_cam(aoi, id = NULL, dep = NULL, coords = NULL, crs = 4326)
+ace_get_cam(aoi, group_id = NULL, dep = NULL, coords = NULL, crs = 4326)
 }
 \arguments{
 \item{aoi}{The area of interest as an sf, sfc, or sp (SpatialPolygonsDataFrame) object}
 
-\item{id}{If aoi contains multiple polygons, name of the attribute to be appended to the output dataframe as identifier}
+\item{group_id}{If aoi contains multiple polygons, name of the attribute to be appended to the output dataframe as identifier}
 
 \item{dep}{A dataframe of camera deployment locations as coordinate points; defaults to NULL, in which case ABMI camera deployment locations are used.}
 
@@ -29,7 +29,7 @@ library(sf)
 # Example aoi of four Wildlife Management Units (WMUs) in Alberta:
 wmu_sample <- st_read(system.file("extdata/wmu_sample.shp", package = "abmi.camera.extras"))
 # Obtain ABMI deployments in sample WMUs, keeping unit name
-wmu_sample_deployments <- ace_get_cam(wmu_sample, id = WMUNIT_NAM)
+wmu_sample_deployments <- ace_get_cam(wmu_sample, group_id = WMUNIT_NAM)
 # Plot results
 wmu_sample <- st_transform(wmu_sample, "+init=epsg:4326")
 plot(wmu_sample_deployments$geometry, pch = 21, cex = 0.7, col = "blue", bg = "gray80")
