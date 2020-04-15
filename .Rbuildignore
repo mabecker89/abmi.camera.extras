@@ -2,3 +2,5 @@
 ^\.Rproj\.user$
 ^\.travis\.yml$
 ^README_files$
+^figure$
+^README\.Rmd$

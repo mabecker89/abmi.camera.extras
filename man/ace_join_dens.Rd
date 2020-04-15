@@ -2,24 +2,24 @@
 % Please edit documentation in R/ace_join_dens.R
 \name{ace_join_dens}
 \alias{ace_join_dens}
-\title{Join estimated single-deployment density values}
+\title{Join estimated ABMI single-deployment density values}
 \usage{
-ace_join_dens(x, species, year, nest = FALSE)
+ace_join_dens(x, species, samp_per, nest = FALSE)
 }
 \arguments{
 \item{x}{a dataframe of deployments of interest, including at minimum the deployment id and year}
 
 \item{species}{character; vector of species of interest (common name). If left blank, all species available will be returned.}
 
-\item{year}{character; vector of years of interest (2013-2018). If left blank, all years available will be returned.}
+\item{samp_per}{character; vector of sampling period of interest. Available periods include the years 2013-2018, inclusive. If left blank, estimates from all available sampling periods will be returned.}
 
 \item{nest}{logical; if TRUE, a dataframe nested by species (common name) is returned.}
 }
 \value{
-Tidy dataframe of deployments in year(s) specified with two appended columns: species and estimated density.
+Tidy dataframe of deployments in sampling period(s) specified with two appended columns: species and estimated density.
 }
 \description{
-Join estimated single-deployment density values
+Join estimated ABMI single-deployment density values
 }
 \details{
 valid values for argument \code{species} currently are:
@@ -36,16 +36,26 @@ valid values for argument \code{species} currently are:
  \item Canada Lynx
  \item Gray Wolf
  }
+
+valid values for argument \code{samp_per} currently are:
+\itemize{
+ \item 2013
+ \item 2014
+ \item 2015
+ \item 2016
+ \item 2017
+ \item 2018
+ }
 }
 \examples{
 library(dplyr)
 # Dataframe of deployments and year
-df <- data.frame(Deployment = c("ABMI-633-NE",
+df <- data.frame(deployment = c("ABMI-633-NE",
                                 "ABMI-633-NW",
                                 "ABMI-633-SE",
                                 "ABMI-633-SW"),
-                 Year = c(2015, 2015, 2015, 2015)) \%>\%
+                 samp_per = c(2015, 2015, 2015, 2015)) \%>\%
                  mutate_if(is.factor, as.character)
 # Join density estimates (e.g. Moose in 2015)
-df_densities <- ace_join_dens(df, species = "Moose", year = "2015", nest = FALSE)
+df_densities <- ace_join_dens(df, species = "Moose", samp_per = "2015", nest = FALSE)
 }
