@@ -6,9 +6,9 @@
 \usage{
 ace_summarise_dens(
   x,
-  group_id = NULL,
-  agg_samp_per = FALSE,
-  samp_per_col = samp_per,
+  group_id,
+  agg_samp_per = TRUE,
+  samp_per_col,
   species_col = common_name,
   dens_col = density,
   conflevel = 0.9
@@ -30,7 +30,7 @@ ace_summarise_dens(
 \item{conflevel}{level of confidence for the confidence interval; defaults to 0.9 (90 percent CI)}
 }
 \value{
-A dataframe with estimated density by species, area, and sampling period, along with associated confidence interval
+A dataframe with estimated density by species, area, and sampling period, along with associated confidence interval.
 }
 \description{
 Summarise animal density within an area of interest

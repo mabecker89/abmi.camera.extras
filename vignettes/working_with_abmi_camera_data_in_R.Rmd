@@ -53,7 +53,10 @@ Next, we estimate the density of each species within each WMU.
 
 ```{r}
 
-df_density_summary <- ace_summarise_dens(df_density, group_id = WMUNIT_NAM, agg_samp_per = FALSE, conflevel = 0.9)
+df_density_summary <- ace_summarise_dens(df_density, 
+                                         group_id = WMUNIT_NAM, 
+                                         agg_samp_per = FALSE, 
+                                         conflevel = 0.9)
 
 df_density_summary
 
