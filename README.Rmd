@@ -220,6 +220,7 @@ df_dens_summary %>%
   mutate(common_name = ifelse(common_name == "White-tailed Deer", "WTD", common_name)) %>%
   rename(WMU = WMUNIT_NAM, year = samp_per, species = common_name) %>%
   filter(WMU == "Crow Lake") %>%
+  mutate(WMU = "512") %>%
   arrange(species, year) %>%
   kable()
 
