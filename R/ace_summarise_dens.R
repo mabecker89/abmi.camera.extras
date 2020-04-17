@@ -25,13 +25,13 @@
 #'                                     group_id = WMUNIT_NAM,
 #'                                     agg_samp_per = FALSE,
 #'                                     conflevel = 0.9)
-#' @return A dataframe with estimated density by species, area, and sampling period, along with associated confidence interval
+#' @return A dataframe with estimated density by species, area, and sampling period, along with associated confidence interval.
 
 # Summarise density
 ace_summarise_dens <- function(x,
-                               group_id = NULL,
-                               agg_samp_per = FALSE,
-                               samp_per_col = samp_per,
+                               group_id,
+                               agg_samp_per = TRUE,
+                               samp_per_col,
                                species_col = common_name,
                                dens_col = density,
                                conflevel = 0.9) {
@@ -41,8 +41,15 @@ ace_summarise_dens <- function(x,
     x <- sf::st_set_geometry(x, NULL)
   }
 
+  # Ensure`species_col` and `dens_col` are column names
+  sc <- dplyr::enquo(species_col) %>% dplyr::quo_name()
+  dc <- dplyr::enquo(dens_col) %>% dplyr::quo_name()
+  if(!(sc %in% names(x) & dc %in% names(x))) {
+    stop("the `species_col` and `dens_col` arguments must both refer to columns in x")
+  }
+
   # Ensure `group_id` is a column name, and group if supplied
-  if(!rlang::quo_is_null(enquo(group_id))) {
+  if(!rlang::quo_is_missing(enquo(group_id))) {
     gr_id <- dplyr::enquo(group_id) %>% dplyr::quo_name()
     if(!gr_id %in% names(x)) {
       stop("the `group_id` argument must refer to a column in x")
@@ -52,20 +59,36 @@ ace_summarise_dens <- function(x,
     x
   }
 
-  # Ensure `samp_per_col`, `species_col`, and `dens_col` are column names
-  spc <- dplyr::enquo(samp_per_col) %>% dplyr::quo_name()
-  sc <- dplyr::enquo(species_col) %>% dplyr::quo_name()
-  dc <- dplyr::enquo(dens_col) %>% dplyr::quo_name()
-  if(!(spc %in% names(x) & sc %in% names(x) & dc %in% names(x))) {
-    stop("the `samp_per_col`, `species_col`, and `dens_col` arguments must all refer to columns in x")
+  # Ensure `samp_per_col` is a column name, and group if supplied and `agg_samp_per` is FALSE
+  if(!rlang::quo_is_missing(enquo(samp_per_col))) {
+    spc <- dplyr::enquo(samp_per_col) %>% dplyr::quo_name()
+    if(!spc %in% names(x)) {
+      stop("the `samp_per_col` argument must refer to a column in x")
+    }
+    if(agg_samp_per == FALSE) {
+      x <- x %>% dplyr::group_by({{ samp_per_col }}, add = TRUE)
+    } else {
+      x
+      warning("Even though the `samp_per_col` argument was provided, sampling period has been aggregated in output. Change `agg_samp_per` to FALSE if this is not the desired output.")
+    }
+  } else {
+    # Use default 'samp_per' if `samp_per_col` is not supplied but `agg_samp_per` is FALSE
+    if("samp_per" %in% names(x)) {
+      if(agg_samp_per == FALSE) {
+        x <- x %>% dplyr::group_by(samp_per, add = TRUE)
+      } else {
+        x
+      }
+    } else {
+      # Return an error if the default does not exist
+      if(agg_samp_per == FALSE) {
+        stop("cannot group by sampling period if argument `sample_per_col` is not supplied and the default column of `samp_per` does not exist. Either set `agg_samp_per` to TRUE, or supply a column to signal the sampling period to group on.")
+      }
+    }
   }
 
-  # Option to aggregate sampling periods
-  if(agg_samp_per == TRUE) {
-    x <- x %>% dplyr::group_by({{ species_col }}, add = TRUE)
-  } else {
-    x <- x %>% dplyr::group_by({{ samp_per_col }}, {{ species_col }}, add = TRUE)
-  }
+  # Last but not least, group by species
+  x <- x %>% dplyr::group_by({{ species_col }}, add = TRUE)
 
   occupied <- n_deployments <- prop_occupied <- agp <- agp.se <- density_avg <- NULL
 
