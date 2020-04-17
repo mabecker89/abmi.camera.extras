@@ -43,7 +43,7 @@ This data includes density information on the following species:
 
 Current (as of 2018) geographic coverage of sampling in the province can be seen in the map below:
 
-<img src="./man/figures/map_deployments.png" width="45%" style="display: block; margin: auto;" />
+<img src="./man/figures/map_deployments.png" width="55%" style="display: block; margin: auto;" />
 
 Features
 --------
@@ -92,7 +92,7 @@ Next, we subset ABMI camera deployments spatially with the `ace_get_cam()` funct
 ``` r
 # Retrieve deployments in aoi as dataframe
 df_deployments <- ace_get_cam(aoi = sf_wmu,
-                              id = WMUNIT_NAM, # Use `id` to define identifier (e.g. WMU name)
+                              group_id = WMUNIT_NAM, # Use `id` to define identifier (e.g. WMU name)
                               crs = 4326) # If desired, (re)project using the `crs` argument
 
 # Plot deployments
@@ -105,17 +105,42 @@ plot(sf_wmu$geometry, border = "gray20", col = NA, add = TRUE)
 
 Note that there are four cameras deployed at each ABMI site, 600-m apart. Each point on the plot represents a site, which has four deployments. See [here](https://www.abmi.ca/home/publications/551-600/565) for detailed explanation of remote camera trap protocols.
 
-From here we can join density estimates for a species of interest in a given year for each deployment using the `ace_join_dens()` function:
+Users may wish to spatially subset their own dataframe of camera deployments locations, instead of retrieving the ABMI's. This can be done by supplying the `dep =` argument in `ace_get_cam()`, along with specifying which columns hold the lat/long coordinates in the `coords =` argument.
+
+From here we can join density estimates for a species of interest in a given sampling period for each deployment using the `ace_join_dens()` function:
 
 ``` r
 # Join density
 df_dens <- ace_join_dens(x = df_deployments,
                          species = c("Moose", "White-tailed Deer"), # See ?ace_join_dens for list of available species
-                         # year = "2018", option to define specific year if desired
+                         # samp_per = "2018", option to define specific sampling period if desired
                          nest = FALSE)
+
+head(df_dens, 10)
 ```
 
-The distribution is typically right-skewed, with most cameras not detecting any individuals (0 density), some who detect a small number of individuals just passing by (low density), and a few who capture longer periods of animal activity (high density).
+    ## Simple feature collection with 10 features and 5 fields
+    ## geometry type:  POINT
+    ## dimension:      XY
+    ## bbox:           xmin: -112.6051 ymin: 55.9708 xmax: -112.2392 ymax: 55.97986
+    ## CRS:            EPSG:4326
+    ## # A tibble: 10 x 6
+    ##    deployment  samp_per               geometry WMUNIT_NAM common_name    density
+    ##    <chr>          <dbl>            <POINT [°]> <fct>      <chr>            <dbl>
+    ##  1 ABMI-632-NW     2015   (-112.6051 55.97986) Crow Lake  Moose            1.32 
+    ##  2 ABMI-632-NW     2015   (-112.6051 55.97986) Crow Lake  White-tailed ~   8.64 
+    ##  3 ABMI-632-SE     2015   (-112.6051 55.97986) Crow Lake  Moose            1.86 
+    ##  4 ABMI-632-SE     2015   (-112.6051 55.97986) Crow Lake  White-tailed ~   0.608
+    ##  5 ABMI-632-SW     2015   (-112.6051 55.97986) Crow Lake  Moose            2.01 
+    ##  6 ABMI-632-SW     2015   (-112.6051 55.97986) Crow Lake  White-tailed ~   3.20 
+    ##  7 ABMI-633-NE     2015    (-112.2392 55.9708) Crow Lake  Moose            0    
+    ##  8 ABMI-633-NE     2015    (-112.2392 55.9708) Crow Lake  White-tailed ~   0    
+    ##  9 ABMI-633-NW     2015    (-112.2392 55.9708) Crow Lake  Moose            0    
+    ## 10 ABMI-633-NW     2015    (-112.2392 55.9708) Crow Lake  White-tailed ~   0
+
+Note that the `samp_per` column refers to *sampling period*, which, in the case of the ABMI, is done yearly.
+
+The distribution of density values is typically right-skewed, with most cameras not detecting any individuals (0 density), some that detect a small number of individuals just passing by (low density), and a few who capture longer periods of animal activity (high density).
 
 ![](README_files/figure-markdown_github/unnamed-chunk-8-1.png)
 
@@ -124,10 +149,15 @@ The last step is to estimate the density of each of the species defined previous
 ``` r
 # Summarise density
 df_dens_summary <- ace_summarise_dens(x = df_dens,
-                                      id = WMUNIT_NAM, # to group deployments when evaluating multiple aoi
-                                      agg.years = FALSE, # option to aggregate years together
+                                      group_id = WMUNIT_NAM, # to group deployments when evaluating multiple aoi or treatments
+                                      agg_samp_per = FALSE, # option to aggregate sampling periods
+                                      samp_per_col = samp_per, # to indicate which column refers to sampling period to group on
+                                      species_col = common_name, # to indicate which column refers to species to group on
+                                      dens_col = density, # column where density values are held
                                       conflevel = 0.9) # for confidence interval - default 90%
 ```
+
+Note that `ace_summarise_dens()` can be used independently of the first two functions if the user wishes to summarise external density data. If supplying your own dataframe (i.e. df\_dens), rather than using output from the first two functions, make sure that the data is formated in a [tidy way](https://r4ds.had.co.nz/tidy-data.html). Each row should represent an observation of density at a single deployment, and each column a variable (e.g. species, treatment, sampling period). The arguments `samp_per_col`, `species_col`, and `dens_col` can be used to customize the call of `ace_summarise_dens` to suit your data.
 
 The output is a dataframe with the following attributes (beside the grouping variable, year, and species):
 
@@ -138,31 +168,38 @@ The output is a dataframe with the following attributes (beside the grouping var
 -   `density_lci` - lower bounds of confidence interval (level specified in `conflevel` attribute)
 -   `density_uci` - upper bounds of confidence interval
 
-The precision of the density estimate is estimated using the [delta method](https://en.wikipedia.org/wiki/Delta_method). Note that some ABMI camera deployments are set up with a lure; the subsequent density estimates have been adjusted to facilitate comparison with non-lured estimates when summarising animal density for an aoi.
+The precision of the density value is estimated through Monte Carlo simulation using the [delta method](https://en.wikipedia.org/wiki/Delta_method). Note that some ABMI camera deployments are set up with a lure; the subsequent density estimates have been adjusted to facilitate comparison with non-lured estimates when summarising animal density for an aoi.
 
 Note that this family of three functions is designed to work with a [pipeline-based workflow](https://r4ds.had.co.nz/pipes.html), and can be re-written in the following way:
 
 ``` r
+# Pipeline workflow
 df_dens_summary <- sf_wmu %>%
-  ace_get_cam(id = WMUNIT_NAM) %>%
+  ace_get_cam(group_id = WMUNIT_NAM) %>%
   ace_join_dens(species = c("Moose", "White-tailed Deer")) %>%
-  ace_summarise_dens(id = WMUNIT_NAM, agg.years = FALSE, conflevel = 0.9)
+  ace_summarise_dens(group_id = WMUNIT_NAM, agg_samp_per = FALSE, 
+                     samp_per_col = samp_per, conflevel = 0.9)
 
-knitr::kable(head(df_dens_summary, n = 10))
+# Results from Crow Lake WMU
+df_dens_summary %>%
+  ungroup() %>%
+  mutate(common_name = ifelse(common_name == "White-tailed Deer", "WTD", common_name)) %>%
+  rename(WMU = WMUNIT_NAM, year = samp_per, species = common_name) %>%
+  filter(WMU == "Crow Lake") %>%
+  arrange(species, year) %>%
+  kable()
 ```
 
-| WMUNIT\_NAM  |  Year| common\_name      |  occupied|  n\_deployments|  prop\_occupied|  density\_avg|  density\_lci\_0.9|  density\_uci\_0.9|
-|:-------------|-----:|:------------------|---------:|---------------:|---------------:|-------------:|------------------:|------------------:|
-| Amisk        |  2014| Moose             |         4|               4|       1.0000000|     4.0651097|          3.0883153|          5.2078589|
-| Amisk        |  2014| White-tailed Deer |         4|               4|       1.0000000|     0.2804053|          0.1911866|          0.3923065|
-| Amisk        |  2018| Moose             |         6|              15|       0.4000000|     0.5113879|          0.2439316|          0.8194244|
-| Amisk        |  2018| White-tailed Deer |        11|              15|       0.7333333|     1.8739315|          1.2934866|          2.4973869|
-| Beaver River |  2016| Moose             |         6|              21|       0.2857143|     0.1682201|          0.0729138|          0.2796785|
-| Beaver River |  2016| White-tailed Deer |        17|              21|       0.8095238|     1.1625098|          0.9328912|          1.3851282|
-| Beaver River |  2017| Moose             |         4|               4|       1.0000000|     0.9331167|          0.5506966|          1.4656062|
-| Beaver River |  2017| White-tailed Deer |         4|               4|       1.0000000|     1.4475633|          1.3324781|          1.5689262|
-| Beaver River |  2018| Moose             |         6|               9|       0.6666667|     1.5955008|          0.8580139|          2.4462463|
-| Beaver River |  2018| White-tailed Deer |         6|               9|       0.6666667|     1.2479091|          0.6637165|          1.9385296|
+| WMU       |  year| species |  occupied|  n\_deployments|  prop\_occupied|  density\_avg|  density\_lci\_0.9|  density\_uci\_0.9|
+|:----------|-----:|:--------|---------:|---------------:|---------------:|-------------:|------------------:|------------------:|
+| Crow Lake |  2015| Moose   |         6|              15|       0.4000000|     0.3937131|          0.1825634|          0.6406152|
+| Crow Lake |  2016| Moose   |        10|              24|       0.4166667|     0.5141033|          0.2989377|          0.7602934|
+| Crow Lake |  2017| Moose   |         6|              24|       0.2500000|     0.2910745|          0.1156081|          0.5087865|
+| Crow Lake |  2018| Moose   |         5|              15|       0.3333333|     0.3412800|          0.1323842|          0.5830967|
+| Crow Lake |  2015| WTD     |         8|              15|       0.5333333|     2.0985017|          1.1970970|          3.1017143|
+| Crow Lake |  2016| WTD     |        17|              24|       0.7083333|     0.2905404|          0.2111087|          0.3771251|
+| Crow Lake |  2017| WTD     |         7|              24|       0.2916667|     0.1450482|          0.0663748|          0.2421149|
+| Crow Lake |  2018| WTD     |        10|              15|       0.6666667|     0.8012311|          0.4988580|          1.1628889|
 
 License
 -------
