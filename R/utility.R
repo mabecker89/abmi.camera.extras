@@ -7,6 +7,7 @@
 #' @param agp.se the standard error of the abundance given presence
 #' @importFrom stats rbinom rnorm sd
 #' @return numeric of type double with length of 10000 (the number of simulations)
+#' @keywords internal
 #' @author Marcus Becker
 
 # Create simulation for confidence interval

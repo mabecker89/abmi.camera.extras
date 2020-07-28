@@ -8,5 +8,6 @@
 #' @name abmi.camera.extras
 "_PACKAGE"
 
+# Define global variables
 utils::globalVariables(c("abmi_deployment_locations", "data", "is", "density_adj", "density",
                          "common_name", "samp_per"))

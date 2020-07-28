@@ -4,11 +4,11 @@ output:
     html_preview: false
 ---
 
-```{r setup, include=TRUE, echo=FALSE, warning=FALSE}
+```{r, include=FALSE, echo=FALSE, warning=FALSE}
 
 library(knitr)
 # Set knitr chunk options
-opts_chunk$set(include=TRUE, echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE)
+opts_chunk$set(include=TRUE, echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE, fig.path = "man/figures/")
 
 ```
 
