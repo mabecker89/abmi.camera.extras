@@ -51,10 +51,16 @@ This data includes density information on the following species:
   - Canada Lynx
   - Gray Wolf
 
-Current (as of 2018) geographic coverage of sampling in the province can
+Current (as of 2019) geographic coverage of sampling in the province can
 be seen in the map below:
 
-<img src="./man/figures/map_deployments.png" width="55%" style="display: block; margin: auto;" />
+![](man/figures/unnamed-chunk-4-1.png)<!-- -->
+
+Note that there are four cameras deployed at each ABMI site, 600-m
+apart. Each point on the plot represents a site, which has four
+deployments. See
+[here](https://www.abmi.ca/home/publications/551-600/565) for detailed
+explanation of remote camera trap protocols.
 
 ## Features
 
@@ -100,8 +106,8 @@ tibble::glimpse(sf_wmu)
     ## Rows: 4
     ## Columns: 6
     ## $ OBJECTID   <dbl> 25, 34, 49, 50
-    ## $ WMUNIT_NAM <fct> Crow Lake, Lac La Biche, Beaver River, Amisk
-    ## $ WMUNIT_COD <fct> 00512, 00503, 00502, 00504
+    ## $ WMUNIT_NAM <chr> "Crow Lake", "Lac La Biche", "Beaver River", "Amisk"
+    ## $ WMUNIT_COD <chr> "00512", "00503", "00502", "00504"
     ## $ Shape_STAr <dbl> 8018929846, 3220514507, 3585827617, 2704241428
     ## $ Shape_STLe <dbl> 476404.3, 355774.1, 293530.4, 252285.2
     ## $ geometry   <POLYGON [m]> POLYGON ((754560.7 6209247,..., POLYGON ((713202...
@@ -123,11 +129,9 @@ plot(sf_wmu$geometry, border = "gray20", col = NA, add = TRUE)
 
 ![](man/figures/unnamed-chunk-7-1.png)<!-- -->
 
-Note that there are four cameras deployed at each ABMI site, 600-m
-apart. Each point on the plot represents a site, which has four
-deployments. See
-[here](https://www.abmi.ca/home/publications/551-600/565) for detailed
-explanation of remote camera trap protocols.
+``` r
+# Remember that each point represents an ABMI site, which has four camera deployments spaced 600-m apart. 
+```
 
 Users may wish to spatially subset their own dataframe of camera
 deployments locations, instead of retrieving the ABMI’s. This can be
@@ -154,13 +158,13 @@ head(df_dens, 10)
     ## dimension:      XY
     ## bbox:           xmin: -112.6051 ymin: 55.9708 xmax: -112.2392 ymax: 55.97986
     ## geographic CRS: WGS 84
-    ##     deployment samp_per WMUNIT_NAM       common_name   density
-    ## 1  ABMI-632-NW     2015  Crow Lake             Moose 1.3234409
-    ## 2  ABMI-632-NW     2015  Crow Lake White-tailed Deer 8.6387423
-    ## 3  ABMI-632-SE     2015  Crow Lake             Moose 1.8574149
-    ## 4  ABMI-632-SE     2015  Crow Lake White-tailed Deer 0.6080666
-    ## 5  ABMI-632-SW     2015  Crow Lake             Moose 2.0120431
-    ## 6  ABMI-632-SW     2015  Crow Lake White-tailed Deer 3.1963924
+    ##           name samp_per WMUNIT_NAM       common_name   density
+    ## 1  ABMI-632-NW     2015  Crow Lake             Moose 2.0960753
+    ## 2  ABMI-632-NW     2015  Crow Lake White-tailed Deer 8.7893520
+    ## 3  ABMI-632-SE     2015  Crow Lake             Moose 1.8495771
+    ## 4  ABMI-632-SE     2015  Crow Lake White-tailed Deer 0.5805277
+    ## 5  ABMI-632-SW     2015  Crow Lake             Moose 1.6909176
+    ## 6  ABMI-632-SW     2015  Crow Lake White-tailed Deer 3.0587292
     ## 7  ABMI-633-NE     2015  Crow Lake             Moose 0.0000000
     ## 8  ABMI-633-NE     2015  Crow Lake White-tailed Deer 0.0000000
     ## 9  ABMI-633-NW     2015  Crow Lake             Moose 0.0000000
@@ -195,7 +199,7 @@ previously in the area of the interest, which can be done with the
 # Summarise density
 df_dens_summary <- ace_summarise_dens(x = df_dens,
                                       group_id = WMUNIT_NAM, # to group deployments when evaluating multiple aoi or treatments
-                                      agg_samp_per = FALSE, # option to aggregate sampling periods
+                                      agg_samp_per = TRUE, # option to aggregate sampling periods
                                       samp_per_col = samp_per, # to indicate which column refers to sampling period to group on
                                       species_col = common_name, # to indicate which column refers to species to group on
                                       dens_col = density, # column where density values are held
@@ -257,14 +261,26 @@ df_dens_summary %>%
 
 | WMU | year | species | occupied | n\_deployments | prop\_occupied | density\_avg | density\_lci\_0.9 | density\_uci\_0.9 |
 | :-- | ---: | :------ | -------: | -------------: | -------------: | -----------: | ----------------: | ----------------: |
-| 512 | 2015 | Moose   |        6 |             15 |      0.4000000 |    0.3937131 |         0.1842005 |         0.6409921 |
-| 512 | 2016 | Moose   |       10 |             24 |      0.4166667 |    0.5141033 |         0.2939467 |         0.7629145 |
-| 512 | 2017 | Moose   |        6 |             24 |      0.2500000 |    0.2910745 |         0.1141034 |         0.5137621 |
-| 512 | 2018 | Moose   |        5 |             15 |      0.3333333 |    0.3412800 |         0.1342232 |         0.5830490 |
-| 512 | 2015 | WTD     |        8 |             15 |      0.5333333 |    2.0985017 |         1.1825236 |         3.1376959 |
-| 512 | 2016 | WTD     |       17 |             24 |      0.7083333 |    0.2905404 |         0.2109085 |         0.3808166 |
-| 512 | 2017 | WTD     |        7 |             24 |      0.2916667 |    0.1450482 |         0.0662570 |         0.2423587 |
-| 512 | 2018 | WTD     |       10 |             15 |      0.6666667 |    0.8012311 |         0.4916038 |         1.1757377 |
+| 512 | 2015 | Moose   |        6 |             15 |      0.4000000 |    0.4191881 |         0.1996877 |         0.6708737 |
+| 512 | 2016 | Moose   |       10 |             24 |      0.4166667 |    0.4972947 |         0.2865121 |         0.7307630 |
+| 512 | 2017 | Moose   |        6 |             24 |      0.2500000 |    0.2781682 |         0.1113606 |         0.4969548 |
+| 512 | 2018 | Moose   |        4 |             15 |      0.2666667 |    0.2258010 |         0.0646671 |         0.4351443 |
+| 512 | 2015 | WTD     |        8 |             15 |      0.5333333 |    2.1687743 |         1.2316348 |         3.2243850 |
+| 512 | 2016 | WTD     |       17 |             24 |      0.7083333 |    0.2744533 |         0.1999294 |         0.3582341 |
+| 512 | 2017 | WTD     |        7 |             24 |      0.2916667 |    0.1913708 |         0.0862714 |         0.3194014 |
+| 512 | 2018 | WTD     |       10 |             15 |      0.6666667 |    0.9047140 |         0.5418893 |         1.3517905 |
+
+We can visualize the density results (this time aggregated by year, or
+sampling period) like so:
+
+``` r
+df_dens_summary_agg <- sf_wmu %>%
+  ace_get_cam(group_id = WMUNIT_NAM) %>%
+  ace_join_dens(species = c("Moose", "White-tailed Deer")) %>%
+  ace_summarise_dens(group_id = WMUNIT_NAM, agg_samp_per = TRUE, conflevel = 0.9)
+```
+
+![](man/figures/unnamed-chunk-13-1.png)<!-- -->
 
 ## License
 
