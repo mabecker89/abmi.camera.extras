@@ -38,7 +38,7 @@ This package provides access to the Alberta Biodiversity Monitoring Institute's 
 
 This package currently contains data from ABMI camera deployments in the following years:
 
-```{r, echo=FALSE, fig.height=4, fig.showtext=TRUE}
+```{r, echo=FALSE, fig.height=5, fig.showtext=TRUE}
 
 library(abmi.camera.extras)
 library(ggplot2)
@@ -166,7 +166,7 @@ df_deployments <- ace_get_cam(aoi = sf_wmu,
 
 # Plot deployments
 sf_wmu <- st_transform(sf_wmu, "+init=epsg:4326")
-plot(df_deployments$geometry, pch = 21, cex = 0.7, col = "blue", bg = "gray80")
+plot(df_deployments$geometry, pch = 21, cex = 0.7, col = "#2D415B", bg = "gray80")
 plot(sf_wmu$geometry, border = "gray20", col = NA, add = TRUE)
 # Remember that each point represents an ABMI site, which has four camera deployments spaced 600-m apart. 
 
@@ -192,6 +192,8 @@ Note that the `samp_per` column refers to *sampling period*, which, in the case 
 
 The distribution of density values is typically right-skewed, with most cameras not detecting any individuals (0 density), some that detect a small number of individuals just passing by (low density), and a few who capture longer periods of animal activity (high density).
 
+<br>
+
 ``` {r echo=FALSE, fig.showtext=TRUE}
 
 # View distribution
@@ -208,6 +210,8 @@ ggplot(df_dens, aes(x = density, fill = common_name)) +
         title = element_text(size = 8))
 
 ```
+
+<br>
 
 The last step is to estimate the density of each of the species defined previously in the area of the interest, which can be done with the `ace_summarise_dens()` function.
 

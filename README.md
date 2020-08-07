@@ -123,7 +123,7 @@ df_deployments <- ace_get_cam(aoi = sf_wmu,
 
 # Plot deployments
 sf_wmu <- st_transform(sf_wmu, "+init=epsg:4326")
-plot(df_deployments$geometry, pch = 21, cex = 0.7, col = "blue", bg = "gray80")
+plot(df_deployments$geometry, pch = 21, cex = 0.7, col = "#2D415B", bg = "gray80")
 plot(sf_wmu$geometry, border = "gray20", col = NA, add = TRUE)
 ```
 
@@ -189,7 +189,11 @@ cameras not detecting any individuals (0 density), some that detect a
 small number of individuals just passing by (low density), and a few who
 capture longer periods of animal activity (high density).
 
+<br>
+
 ![](man/figures/unnamed-chunk-9-1.png)<!-- -->
+
+<br>
 
 The last step is to estimate the density of each of the species defined
 previously in the area of the interest, which can be done with the
@@ -261,14 +265,14 @@ df_dens_summary %>%
 
 | WMU | year | species | occupied | n\_deployments | prop\_occupied | density\_avg | density\_lci\_0.9 | density\_uci\_0.9 |
 | :-- | ---: | :------ | -------: | -------------: | -------------: | -----------: | ----------------: | ----------------: |
-| 512 | 2015 | Moose   |        6 |             15 |      0.4000000 |    0.4191881 |         0.1996877 |         0.6708737 |
-| 512 | 2016 | Moose   |       10 |             24 |      0.4166667 |    0.4972947 |         0.2865121 |         0.7307630 |
-| 512 | 2017 | Moose   |        6 |             24 |      0.2500000 |    0.2781682 |         0.1113606 |         0.4969548 |
-| 512 | 2018 | Moose   |        4 |             15 |      0.2666667 |    0.2258010 |         0.0646671 |         0.4351443 |
-| 512 | 2015 | WTD     |        8 |             15 |      0.5333333 |    2.1687743 |         1.2316348 |         3.2243850 |
-| 512 | 2016 | WTD     |       17 |             24 |      0.7083333 |    0.2744533 |         0.1999294 |         0.3582341 |
-| 512 | 2017 | WTD     |        7 |             24 |      0.2916667 |    0.1913708 |         0.0862714 |         0.3194014 |
-| 512 | 2018 | WTD     |       10 |             15 |      0.6666667 |    0.9047140 |         0.5418893 |         1.3517905 |
+| 512 | 2015 | Moose   |        6 |             15 |      0.4000000 |    0.4191881 |         0.1939824 |         0.6757982 |
+| 512 | 2016 | Moose   |       10 |             24 |      0.4166667 |    0.4972947 |         0.2855369 |         0.7374828 |
+| 512 | 2017 | Moose   |        6 |             24 |      0.2500000 |    0.2781682 |         0.1130253 |         0.4951175 |
+| 512 | 2018 | Moose   |        4 |             15 |      0.2666667 |    0.2258010 |         0.0644390 |         0.4300629 |
+| 512 | 2015 | WTD     |        8 |             15 |      0.5333333 |    2.1687743 |         1.2245665 |         3.2101350 |
+| 512 | 2016 | WTD     |       17 |             24 |      0.7083333 |    0.2744533 |         0.1987636 |         0.3582115 |
+| 512 | 2017 | WTD     |        7 |             24 |      0.2916667 |    0.1913708 |         0.0861267 |         0.3218169 |
+| 512 | 2018 | WTD     |       10 |             15 |      0.6666667 |    0.9047140 |         0.5425815 |         1.3317576 |
 
 We can visualize the density results (this time aggregated by year, or
 sampling period) like so:
