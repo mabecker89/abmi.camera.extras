@@ -35,6 +35,8 @@ associated code base.
 This package currently contains data from ABMI camera deployments in the
 following years:
 
+<br>
+
 ![](man/figures/unnamed-chunk-3-1.png)<!-- -->
 
 This data includes density information on the following species:
@@ -265,14 +267,14 @@ df_dens_summary %>%
 
 | WMU | year | species | occupied | n\_deployments | prop\_occupied | density\_avg | density\_lci\_0.9 | density\_uci\_0.9 |
 | :-- | ---: | :------ | -------: | -------------: | -------------: | -----------: | ----------------: | ----------------: |
-| 512 | 2015 | Moose   |        6 |             15 |      0.4000000 |    0.4191881 |         0.1939824 |         0.6757982 |
-| 512 | 2016 | Moose   |       10 |             24 |      0.4166667 |    0.4972947 |         0.2855369 |         0.7374828 |
-| 512 | 2017 | Moose   |        6 |             24 |      0.2500000 |    0.2781682 |         0.1130253 |         0.4951175 |
-| 512 | 2018 | Moose   |        4 |             15 |      0.2666667 |    0.2258010 |         0.0644390 |         0.4300629 |
-| 512 | 2015 | WTD     |        8 |             15 |      0.5333333 |    2.1687743 |         1.2245665 |         3.2101350 |
-| 512 | 2016 | WTD     |       17 |             24 |      0.7083333 |    0.2744533 |         0.1987636 |         0.3582115 |
-| 512 | 2017 | WTD     |        7 |             24 |      0.2916667 |    0.1913708 |         0.0861267 |         0.3218169 |
-| 512 | 2018 | WTD     |       10 |             15 |      0.6666667 |    0.9047140 |         0.5425815 |         1.3317576 |
+| 512 | 2015 | Moose   |        6 |             15 |      0.4000000 |    0.4191881 |         0.1933977 |         0.6785373 |
+| 512 | 2016 | Moose   |       10 |             24 |      0.4166667 |    0.4972947 |         0.2885590 |         0.7398063 |
+| 512 | 2017 | Moose   |        6 |             24 |      0.2500000 |    0.2781682 |         0.1099566 |         0.4953979 |
+| 512 | 2018 | Moose   |        4 |             15 |      0.2666667 |    0.2258010 |         0.0659979 |         0.4355656 |
+| 512 | 2015 | WTD     |        8 |             15 |      0.5333333 |    2.1687743 |         1.2121285 |         3.2442772 |
+| 512 | 2016 | WTD     |       17 |             24 |      0.7083333 |    0.2744533 |         0.1994600 |         0.3572350 |
+| 512 | 2017 | WTD     |        7 |             24 |      0.2916667 |    0.1913708 |         0.0863581 |         0.3196741 |
+| 512 | 2018 | WTD     |       10 |             15 |      0.6666667 |    0.9047140 |         0.5448479 |         1.3389648 |
 
 We can visualize the density results (this time aggregated by year, or
 sampling period) like so:
@@ -284,7 +286,11 @@ df_dens_summary_agg <- sf_wmu %>%
   ace_summarise_dens(group_id = WMUNIT_NAM, agg_samp_per = TRUE, conflevel = 0.9)
 ```
 
+<br>
+
 ![](man/figures/unnamed-chunk-13-1.png)<!-- -->
+
+<br>
 
 ## License
 
