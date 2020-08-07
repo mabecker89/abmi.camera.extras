@@ -2,7 +2,7 @@
 #'
 #' @param x a dataframe of deployments of interest, including at minimum the deployment id and year
 #' @param species character; vector of species of interest (common name). If left blank, all species available will be returned.
-#' @param samp_per character; vector of sampling period of interest. Available periods include the years 2013-2018, inclusive. If left blank, estimates from all available sampling periods will be returned.
+#' @param samp_per character; vector of sampling period of interest. Available periods include the years 2013-2019, inclusive. If left blank, estimates from all available sampling periods will be returned.
 #' @param nest logical; if TRUE, a dataframe nested by species (common name) is returned.
 #' @details valid values for argument \code{species} currently are:
 #' \itemize{
@@ -26,18 +26,19 @@
 #'  \item 2016
 #'  \item 2017
 #'  \item 2018
+#'  \item 2019
 #'  }
 #' @import dplyr tidyr
 #' @export
 #' @examples
 #' library(dplyr)
-#' # Dataframe of deployments and year
-#' df <- data.frame(deployment = c("ABMI-633-NE",
-#'                                 "ABMI-633-NW",
-#'                                 "ABMI-633-SE",
-#'                                 "ABMI-633-SW"),
+#' # Dataframe of deployment names and year
+#' df <- data.frame(name = c("ABMI-633-NE",
+#'                           "ABMI-633-NW",
+#'                           "ABMI-633-SE",
+#'                           "ABMI-633-SW"),
 #'                  samp_per = c(2015, 2015, 2015, 2015)) %>%
-#'                  mutate_if(is.factor, as.character)
+#'                  mutate_if(is.factor, as.numeric)
 #' # Join density estimates (e.g. Moose in 2015)
 #' df_densities <- ace_join_dens(df, species = "Moose", samp_per = "2015", nest = FALSE)
 #' @return Tidy dataframe of deployments in sampling period(s) specified with two appended columns: species and estimated density.
@@ -62,7 +63,7 @@ ace_join_dens <- function(x, species, samp_per, nest = FALSE) {
           "Gray Wolf")
 
   # Possible sampling periods
-  all_samp_per <- c("2013", "2014", "2015", "2016", "2017", "2018")
+  all_samp_per <- c("2013", "2014", "2015", "2016", "2017", "2018", "2019")
 
   # Create default values for species and year
   if(missing(species)) {
@@ -86,13 +87,11 @@ ace_join_dens <- function(x, species, samp_per, nest = FALSE) {
   }
 
   # Subset density by species and year
-  d <- density_adj %>% dplyr::filter(common_name %in% species, samp_per %in% sample_period)
+  d <- density_adj %>% dplyr::filter(common_name %in% species, samp_per %in% sample_period) %>%
+    mutate(samp_per = as.numeric(samp_per))
 
   df <- x %>%
-    dplyr::left_join(d, by = c("deployment", "samp_per")) %>%
-    dplyr::filter(!is.na(density_adj)) %>%
-    dplyr::rename(density = density_adj)
-
+    dplyr::left_join(d, by = c("name", "samp_per"))
 
   # Nesting
   if(nest == TRUE) {

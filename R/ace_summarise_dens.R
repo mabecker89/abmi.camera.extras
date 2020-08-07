@@ -66,7 +66,7 @@ ace_summarise_dens <- function(x,
       stop("the `samp_per_col` argument must refer to a column in x")
     }
     if(agg_samp_per == FALSE) {
-      x <- x %>% dplyr::group_by({{ samp_per_col }}, add = TRUE)
+      x <- x %>% dplyr::group_by({{ samp_per_col }}, .add = TRUE)
     } else {
       x
       warning("Even though the `samp_per_col` argument was provided, sampling period has been aggregated in output. Change `agg_samp_per` to FALSE if this is not the desired output.")
@@ -75,7 +75,7 @@ ace_summarise_dens <- function(x,
     # Use default 'samp_per' if `samp_per_col` is not supplied but `agg_samp_per` is FALSE
     if("samp_per" %in% names(x)) {
       if(agg_samp_per == FALSE) {
-        x <- x %>% dplyr::group_by(samp_per, add = TRUE)
+        x <- x %>% dplyr::group_by(samp_per, .add = TRUE)
       } else {
         x
       }
@@ -88,7 +88,7 @@ ace_summarise_dens <- function(x,
   }
 
   # Last but not least, group by species
-  x <- x %>% dplyr::group_by({{ species_col }}, add = TRUE)
+  x <- x %>% dplyr::group_by({{ species_col }}, .add = TRUE)
 
   occupied <- n_deployments <- prop_occupied <- agp <- agp.se <- density_avg <- NULL
 
@@ -108,7 +108,7 @@ ace_summarise_dens <- function(x,
 
   # Simulate for CI
   df <- df %>%
-    dplyr::group_by({{ species_col }}, add = TRUE) %>%
+    dplyr::group_by({{ species_col }}, .add = TRUE) %>%
     tidyr::nest() %>%
     dplyr::mutate(
       agp.se = purrr::map(.x = data, .f = ~ purrr::pluck(.x[["agp.se"]])),

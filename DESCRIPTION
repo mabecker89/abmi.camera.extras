@@ -26,4 +26,4 @@ Suggests:
 VignetteBuilder: knitr
 URL: https://github.com/mabecker89/abmi.camera.extras
 BugReports: https://github.com/mabecker89/abmi.camera.extras/issues
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1

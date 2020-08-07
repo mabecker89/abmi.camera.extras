@@ -9,5 +9,4 @@
 "_PACKAGE"
 
 # Define global variables
-utils::globalVariables(c("abmi_deployment_locations", "data", "is", "density_adj", "density",
-                         "common_name", "samp_per"))
+utils::globalVariables(c("public_locations", "data", "is", "density_adj", "species", "density", "common_name", "samp_per"))

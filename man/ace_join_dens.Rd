@@ -11,7 +11,7 @@ ace_join_dens(x, species, samp_per, nest = FALSE)
 
 \item{species}{character; vector of species of interest (common name). If left blank, all species available will be returned.}
 
-\item{samp_per}{character; vector of sampling period of interest. Available periods include the years 2013-2018, inclusive. If left blank, estimates from all available sampling periods will be returned.}
+\item{samp_per}{character; vector of sampling period of interest. Available periods include the years 2013-2019, inclusive. If left blank, estimates from all available sampling periods will be returned.}
 
 \item{nest}{logical; if TRUE, a dataframe nested by species (common name) is returned.}
 }
@@ -45,17 +45,18 @@ valid values for argument \code{samp_per} currently are:
  \item 2016
  \item 2017
  \item 2018
+ \item 2019
  }
 }
 \examples{
 library(dplyr)
-# Dataframe of deployments and year
-df <- data.frame(deployment = c("ABMI-633-NE",
-                                "ABMI-633-NW",
-                                "ABMI-633-SE",
-                                "ABMI-633-SW"),
+# Dataframe of deployment names and year
+df <- data.frame(name = c("ABMI-633-NE",
+                          "ABMI-633-NW",
+                          "ABMI-633-SE",
+                          "ABMI-633-SW"),
                  samp_per = c(2015, 2015, 2015, 2015)) \%>\%
-                 mutate_if(is.factor, as.character)
+                 mutate_if(is.factor, as.numeric)
 # Join density estimates (e.g. Moose in 2015)
 df_densities <- ace_join_dens(df, species = "Moose", samp_per = "2015", nest = FALSE)
 }

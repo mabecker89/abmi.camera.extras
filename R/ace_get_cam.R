@@ -49,9 +49,9 @@ ace_get_cam <- function(aoi, group_id = NULL, dep = NULL, coords = NULL, crs = 4
 
   if (is.null(dep)) {
     # Prepare abmi deployment locations into sf object with 4326 as crs, then transform to y
-    data("abmi_deployment_locations", envir = environment())
-    sf_abmi_dep <- abmi_deployment_locations %>%
-      sf::st_as_sf(coords = c("public_long", "public_lat"),
+    data("public_locations", envir = environment())
+    sf_abmi_dep <- public_locations %>%
+      sf::st_as_sf(coords = c("public_longitude", "public_latitude"),
                    crs = 4326) %>%
       sf::st_transform(crs)
 

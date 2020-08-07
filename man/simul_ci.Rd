@@ -26,3 +26,4 @@ Utility functions
 \author{
 Marcus Becker
 }
+\keyword{internal}
