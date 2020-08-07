@@ -180,7 +180,7 @@
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>sf</span>)
 <span class='co'># Example aoi of four Wildlife Management Units (WMUs) in Alberta:</span>
-<span class='no'>wmu_sample</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_read.html'>st_read</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/wmu_sample.shp"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"abmi.camera.extras"</span>))</div><div class='output co'>#&gt; Reading layer `wmu_sample' from data source `C:\Users\mabec\AppData\Local\Temp\RtmpoxQSJ8\temp_libpath38982fa534db\abmi.camera.extras\extdata\wmu_sample.shp' using driver `ESRI Shapefile'
+<span class='no'>wmu_sample</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_read.html'>st_read</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/wmu_sample.shp"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"abmi.camera.extras"</span>))</div><div class='output co'>#&gt; Reading layer `wmu_sample' from data source `C:\Users\mabec\Documents\R\win-library\4.0\abmi.camera.extras\extdata\wmu_sample.shp' using driver `ESRI Shapefile'
 #&gt; Simple feature collection with 4 features and 5 fields
 #&gt; geometry type:  POLYGON
 #&gt; dimension:      XY
@@ -193,10 +193,7 @@
 <span class='no'>wmu_densities</span> <span class='kw'>&lt;-</span> <span class='fu'>ace_summarise_dens</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>wmu_sample_deployments_dens</span>,
                                     <span class='kw'>group_id</span> <span class='kw'>=</span> <span class='no'>WMUNIT_NAM</span>,
                                     <span class='kw'>agg_samp_per</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-                                    <span class='kw'>conflevel</span> <span class='kw'>=</span> <span class='fl'>0.9</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: The `add` argument of `group_by()` is deprecated as of dplyr 1.0.0.</span>
-#&gt; <span class='warning'>Please use the `.add` argument instead.</span>
-#&gt; <span class='warning'><span style='color: #555555;'>This warning is displayed once every 8 hours.</span><span></span>
-#&gt; <span class='warning'></span><span style='color: #555555;'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span><span></span></div></span></pre>
+                                    <span class='kw'>conflevel</span> <span class='kw'>=</span> <span class='fl'>0.9</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

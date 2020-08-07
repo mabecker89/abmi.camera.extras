@@ -1,0 +1,66 @@
+---
+title: "Develop models for probabilistic gaps"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+```{r setup, echo=FALSE, warning=FALSE, message=FALSE}
+root <- "G:/Shared drives/ABMI Camera Mammals/data/"
+library(readr)
+library(ggplot2)
+library(dplyr)
+library(forcats)
+library(abmi.themes)
+add_abmi_fonts()
+library(here)
+load(here("data/species.rda"))
+df_gapcheck <- read_csv(paste0(root, "processed/probabilistic-gaps/gap-leave-prob_raw-data_2020-06-25.csv"))
+df_top11 <- read_csv(paste0(root, "lookup/species-top11-by-images.csv"))
+knitr::opts_chunk$set(message=FALSE, warning=FALSE, include=TRUE, echo=FALSE, eval=TRUE)
+```
+
+From a pilot study, we determined that if there is a gap of less than 20 seconds between images of the same species at a camera, the animal is almost always still in the view (no evidence of it walking out and returning). Missing the odd time when it leaves the view for less than 20 seconds has little effect on estimates of the total time it is in the field-of-view. At the other end, if there is a gap of >120 seconds between images of the same species, this almost always represented animals leaving and then returning (i.e., the animal is seen walking out of the field-of-view, then walking back in). Gaps of 20-120 seconds are uncertain. These relatively long periods when the animal could be in the field-of-view or not are important when estimating the total durations animals are in the field-of-view, and thus density.
+
+For the 2015 ABMI images, we checked each 20-120 second gap in series' of native mammals for evidence of the animal leaving and returning. For 2016 and 2017 ABMI images, we checked 20-120 second gaps only for less common species where we had low sample size from 2015. We looked at several images on either side of gaps of 20-120 seconds. In each sequence, the animal was designated as having left the field-of-view during the 20-120 second gap if there was clear evidence of it walking out of the field-of-view and then returning (or a different individual entering the field-of-view). If the animal stayed in one location within the field-of-view, or sequential images showed the animal in disconnected places (as often happens with smaller animals), the animal was assumed to have stayed.
+
+From `df_series` we filter for images that were flagged as requiring a gap check (`gap_check`) and had the gaps between images manually classified in 2015 (or later years for some species or studies). Three gap classifications are possible[^1]:
+
+[^1]: There is a fourth gap class, 'N', which is added to flag cases where a None image follows a native mammal image.  
+
++ **L** - the animal was in the process of leaving the camera field of view ('left');
++ **P** - the animal stayed in the field of view ('present');
++ **U** - 'uncertain' whether the animal stayed or left. 
+
+We then create a new variable, `left`, which indicates whether the animal stayed (gap_class = P) or left (gap_class = L or U).
+
+We can visualize this data in Figure, which displays the same common species seen before. In general, observations where the animal stayed in the field of view are more closely clustered around the 20 second mark, and observations where the animal left the field of view are more evenly spread across the range of gap lengths.
+
+<br>
+
+```{r out.width='100%', fig.showtext=TRUE}
+df_gapcheck %>%
+  filter(common_name %in% species) %>%
+  left_join(df_top11, by = "common_name") %>%
+  mutate(left = as.factor(left),
+         common_name = fct_reorder(factor(common_name), images, .desc = TRUE)) %>%
+  ggplot(mapping = aes(x = diff_time, y = left, color = common_name)) +
+  geom_jitter(height = 0.25, size = 1) +
+  facet_wrap(~common_name, nrow = 4) +
+  scale_color_viridis_d(direction = -1) +
+  scale_y_discrete(labels = c("Stayed", "Left")) +
+  scale_x_continuous(breaks = seq(20, 120, by = 20), limits = c(20,120)) +
+  labs(y = "",
+       x = "Gap Length (s)",
+       title = "Did the animal leave the camera field of view?") +
+  theme_abmi() +
+  theme(legend.position = "none",
+        strip.text = element_text(color = "black"))
+```
+
+<br>

@@ -1,5 +1,5 @@
 ---
-title: "Estimating Animal Density Using Camera Data"
+title: "Using abmi.camera.extras to estimate animal density"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{working_with_abmi_camera_data_in_R}
@@ -13,8 +13,6 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-
-# Working with ABMI Camera data in R
 
 ```{r setup}
 

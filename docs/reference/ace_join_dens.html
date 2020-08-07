@@ -144,7 +144,7 @@
     </tr>
     <tr>
       <th>samp_per</th>
-      <td><p>character; vector of sampling period of interest. Available periods include the years 2013-2018, inclusive. If left blank, estimates from all available sampling periods will be returned.</p></td>
+      <td><p>character; vector of sampling period of interest. Available periods include the years 2013-2019, inclusive. If left blank, estimates from all available sampling periods will be returned.</p></td>
     </tr>
     <tr>
       <th>nest</th>
@@ -178,6 +178,7 @@
 <li><p>2016</p></li>
 <li><p>2017</p></li>
 <li><p>2018</p></li>
+<li><p>2019</p></li>
 </ul>
 
 
@@ -187,13 +188,13 @@
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from 'package:base':</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'><span class='co'># Dataframe of deployments and year</span>
-<span class='no'>df</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>deployment</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ABMI-633-NE"</span>,
-                                <span class='st'>"ABMI-633-NW"</span>,
-                                <span class='st'>"ABMI-633-SE"</span>,
-                                <span class='st'>"ABMI-633-SW"</span>),
+#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'><span class='co'># Dataframe of deployment names and year</span>
+<span class='no'>df</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='kw'>name</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"ABMI-633-NE"</span>,
+                          <span class='st'>"ABMI-633-NW"</span>,
+                          <span class='st'>"ABMI-633-SE"</span>,
+                          <span class='st'>"ABMI-633-SW"</span>),
                  <span class='kw'>samp_per</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>2015</span>, <span class='fl'>2015</span>, <span class='fl'>2015</span>, <span class='fl'>2015</span>)) <span class='kw'>%&gt;%</span>
-                 <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate_all.html'>mutate_if</a></span>(<span class='no'>is.factor</span>, <span class='no'>as.character</span>)
+                 <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate_all.html'>mutate_if</a></span>(<span class='no'>is.factor</span>, <span class='no'>as.numeric</span>)
 <span class='co'># Join density estimates (e.g. Moose in 2015)</span>
 <span class='no'>df_densities</span> <span class='kw'>&lt;-</span> <span class='fu'>ace_join_dens</span>(<span class='no'>df</span>, <span class='kw'>species</span> <span class='kw'>=</span> <span class='st'>"Moose"</span>, <span class='kw'>samp_per</span> <span class='kw'>=</span> <span class='st'>"2015"</span>, <span class='kw'>nest</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div></pre>
   </div>
