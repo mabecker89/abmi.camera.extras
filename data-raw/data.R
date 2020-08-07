@@ -35,7 +35,8 @@ density_adj <- read_csv(paste0(root, "results/density/Marcus/abmi-all-years_dens
   group_by(name, samp_per, common_name) %>%
   summarise(density = mean(density_km2_lure_adj, na.rm = TRUE)) %>%
   # Remove NaN's
-  filter(!density == "NaN")
+  filter(!density == "NaN") %>%
+  ungroup()
 
 # Load deployment locations
 public_locations <- read_csv(paste0(root, "data/lookup/locations/all-cam-public-locations_2020-07-31.csv")) %>%
@@ -44,5 +45,15 @@ public_locations <- read_csv(paste0(root, "data/lookup/locations/all-cam-public-
          !str_detect(name, "HF2|CUDDE|HP2X|OG|-b_"),
          year >= 2014) %>%
   rename(samp_per = year)
+
+# Camera deployments represented in the density data
+cams <- density_adj %>%
+  select(name) %>%
+  distinct() %>%
+  pull()
+
+# Filter out camera deployments that are not represented
+public_locations <- public_locations %>%
+  filter(name %in% cams)
 
 usethis::use_data(species, density_adj, public_locations, overwrite = TRUE)
