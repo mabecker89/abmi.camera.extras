@@ -84,3 +84,10 @@ df_density %>%
 ```
 
 <br>
+
+<center>
+Next: [Lure adjustments] <br>
+Previous: [Effective detection distance](link)
+</center>
+
+<br>

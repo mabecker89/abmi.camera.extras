@@ -210,3 +210,12 @@ plot_abmi_operating_days(x = df_tbd_summary, samp_per = "2018", bar_fill = pal20
 plot_abmi_operating_days(x = df_tbd_summary, samp_per = "2019", bar_fill = pal2019)
 
 ```
+
+<br>
+
+<center>
+Next: [Time in field of view](link) <br>
+Previous: [Probabilistic gaps](link)
+</center>
+
+<br>

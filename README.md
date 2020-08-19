@@ -14,33 +14,26 @@ This package and content provide information related to how the Alberta
 Biodiversity Monitoring Institute (ABMI) estimates the density of
 animals using data collected from remote cameras.
 
-## Site Contents
+### Site Contents
 
-1.  ABMI Camera Data
+#### ABMI Camera Data
 
-<!-- end list -->
+  - [Image summaries](link)
+  - [Species detections](link)
 
-  - Species Occurrences
-  - Image Summaries
+#### Methods
 
-<!-- end list -->
+  - [Overview](link)
+  - [Probabilistic gaps](link)
+  - [Deployment timeframes](link)
+  - [Time in the camera field of view](link)
+  - [Effective detection distance](link)
+  - [Density at individual deployments](link)
+  - [Lure adjustments](link)
+  - [Density in an area of interest (AOI)](link)
+  - [Important assumptions](link)
 
-2.  Density Estimation Methods
-
-<!-- end list -->
-
-  - Overview
-  - Identifying Series
-  - Probabilistic Gaps
-  - Deployment Timeframes
-  - Time in Camera Field of View
-  - Effective Detection Distances
-  - Density at Individual Deployments
-  - Density in an Area of Interest
-
-<!-- end list -->
-
-3.  Functions
+#### Functions
 
 ## Installation
 
@@ -53,7 +46,7 @@ remotes::install_github("mabecker89/abmi.camera.extras")
 ## License
 
 The estimates, predictions, and related documentation are © ABMI
-(2013-2018) under a [CC BY-SA 4.0
+(2013-2019) under a [CC BY-SA 4.0
 license](https://creativecommons.org/licenses/by-sa/4.0/).
 
 This R package is licensed under [MIT

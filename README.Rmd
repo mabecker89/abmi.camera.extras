@@ -26,22 +26,22 @@ This package and content provide information related to how the Alberta Biodiver
 
 #### ABMI Camera Data
 
-1. Species detection
+  + [Image summaries](https://mabecker89.github.io/abmi.camera.extras/)
+  + [Species detections](https://mabecker89.github.io/abmi.camera.extras/)
 
-2. Image summaries
+#### Methods
 
-#### Estimating Density
+  + [Overview](link)
+  + [Probabilistic gaps](https://mabecker89.github.io/abmi.camera.extras/)
+  + [Deployment timeframes](https://mabecker89.github.io/abmi.camera.extras/)
+  + [Time in the camera field of view](https://mabecker89.github.io/abmi.camera.extras/)
+  + [Effective detection distance](https://mabecker89.github.io/abmi.camera.extras/)
+  + [Density at individual deployments](https://mabecker89.github.io/abmi.camera.extras/)
+  + [Lure adjustments](https://mabecker89.github.io/abmi.camera.extras/)
+  + [Density in an area of interest (AOI)](https://mabecker89.github.io/abmi.camera.extras/)
+  + [Important assumptions](https://mabecker89.github.io/abmi.camera.extras/)
 
-  + Overview
-  + Identifying Series
-  + Probabilistic Gaps
-  + Deployment Timeframes
-  + Time in Camera Field of View
-  + Effective Detection Distances
-  + Density at Individual Deployments
-  + Density in an Area of Interest
-
-3. Functions
+#### Functions
 
 ## Installation
 
@@ -55,7 +55,7 @@ remotes::install_github("mabecker89/abmi.camera.extras")
 
 ## License 
 
-The estimates, predictions, and related documentation are © ABMI (2013-2018) under a [CC BY-SA 4.0 license](https://creativecommons.org/licenses/by-sa/4.0/).
+The estimates, predictions, and related documentation are © ABMI (2013-2019) under a [CC BY-SA 4.0 license](https://creativecommons.org/licenses/by-sa/4.0/).
 
 This R package is licensed under [MIT license](https://github.com/mabecker89/abmi.camera.extras/blob/master/LICENSE) © 2020 Marcus Becker, David Huggard, and the ABMI.
 

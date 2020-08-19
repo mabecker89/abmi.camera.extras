@@ -1,29 +1,20 @@
+title: "ABMI Cameras"
+url: https://mabecker89.github.io/abmi.camera.extras/
 template:
   params:
     bootswatch: flatly
-
-title: "ABMI Cameras"
-
 navbar:
-  title: "ABMI Cameras"
-  structure:
-    left:
-      - Data
-      - Methods
-      - Functions
-    right:
-      - Github
-      - Twitter
-  components:
-    Data:
-      text: Data
+  left:
+    - icon: fa-home
+      text: "Home"
+      href: index.html
+    - text: "Data"
       menu:
         - text: "Image summaries"
           href: articles/images.html
-        - text: "Species detection"
+        - text: "Species detections"
           href: articles/detections.html
-    Methods:
-      text: Methods
+    - text: "Methods"
       menu:
         - text: "Overview"
           href: articles/overview.html
@@ -37,15 +28,11 @@ navbar:
           href: articles/edd.html
         - text: "Density at individual deployments"
           href: articles/dep-density.html
+        - text: "Lure adjustments"
+          href: articles/lure.html
         - text: "Density in an area of interest (AOI)"
           href: articles/aoi-density.html
-    Functions:
-      text: Functions
+        - text: "Important assumptions"
+          href: articles/assumptions.html
+    - text: "Functions"
       href: reference/index.html
-    Github:
-      icon: fa-github
-      href: https://github.com/mabecker89/abmi.camera.extras/
-    Twitter:
-      icon: fa-twitter
-      href: https://twitter.com/ABbiodiversity
-

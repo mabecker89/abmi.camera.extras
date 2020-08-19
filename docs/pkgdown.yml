@@ -1,10 +1,20 @@
-pandoc: 2.7.3
+pandoc: 2.7.2
 pkgdown: 1.5.1
 pkgdown_sha: ~
 articles:
-  01_overview: 01_overview.html
-  02_gaps: 02_gaps.html
-  03_aoi-density: 03_aoi-density.html
+  aoi-density: aoi-density.html
+  assumptions: assumptions.html
+  dep-density: dep-density.html
   detections: detections.html
-last_built: 2020-08-12T17:50Z
+  edd: edd.html
+  fov: fov.html
+  gaps: gaps.html
+  images: images.html
+  lure: lure.html
+  overview: overview.html
+  timeframes: timeframes.html
+last_built: 2020-08-19T20:28Z
+urls:
+  reference: https://mabecker89.github.io/abmi.camera.extras//reference
+  article: https://mabecker89.github.io/abmi.camera.extras//articles
 

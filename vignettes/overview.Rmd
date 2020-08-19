@@ -53,3 +53,12 @@ There are a number of strong assumptions involved in using this measure to estim
 There are additional assumptions involved in the procedures to estimate effective detection distance, including an assumption that all animals within a certain distance of the camera are detected, and in converting the discrete images into time in field-of-view. These assumptions are discussed below. Because the world is complicated, assumptions are never met perfectly. The important thing is to consider – and, ideally, design auxiliary tests to measure – is whether the violations are serious enough to impact the answer to whatever question(s) the cameras are being used to answer. In many cases, absolute density estimates may not be accurate, but the results can still serve as a useable index of relative density, if assumptions are violated about equally in whatever units are being compared (habitat types, experimental treatments, years for long-term trend, etc).
 
 A final consideration is the sampling distribution of density estimates. Because individual cameras sample tiny areas compared to the home ranges of the species they survey, the resulting sampling distribution can be horrendous – the majority of cameras never detect the species at all (density = 0), a few cameras record the species passing by once or twice for brief periods (low densities), and a very few number of cameras record long durations as the animals forage, rest, or play in front of the camera, or revisit a favourite spot repeatedly (very high densities). Longer duration camera deployments can help smooth out some of that extreme variation, but ultimately large numbers of cameras are required for precise estimates. Appropriate questions, rigorous study designs, and modest expectations are required for camera-based studies.
+
+<br>
+
+<center>
+Next: [Probabilistic gaps](link) <br>
+Previous: [Species detections](link)
+</center>
+
+<br>

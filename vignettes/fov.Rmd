@@ -63,5 +63,12 @@ datatable(df_series_summary_all,
 
 ```
 
+<br>
 
+<center>
+Next: [Effective detection distance](link) <br>
+Previous: [Deployment timeframes](link)
+</center>
+
+<br>
 

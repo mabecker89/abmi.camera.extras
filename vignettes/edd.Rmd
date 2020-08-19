@@ -38,9 +38,11 @@ where *angle* is the angle of the camera’s field-of-view in degrees (42° for 
 
 Detection distances are expected to differ for different species, by habitat types and possibly by season (e.g., on snowpacks versus in summer shrubs). We therefore used the results to develop detection-distance models for eleven species groups and eight broad habitat types: deciduous forest, upland conifer forest, upland grass, shrub, lowland forest, wet grass, water and human footprint.  BIC-based model selection examined seven models with those habitat types grouped into broader categories, and seven more that added a factor for season (winter = October 15 – April 14, summer = April 15 – October 14).
 
+Below we plot the estimated EDD for different species groups for each of the eight broad habitat types and two seasons. 
+
 <br>
 
-```{r, fig.showtext=TRUE, out.width="90%", fig.height=12}
+```{r, fig.showtext=TRUE, out.width="85%", fig.height=11}
 
 add_abmi_fonts()
 
@@ -64,7 +66,7 @@ df_edd %>%
   theme_abmi() +
   labs(x = "",
        y = "",
-       title = "Effective detection distance (m)",
+       title = "Effective detection distance of cameras (m)",
        subtitle = "By species, habitat, and season.",
        caption = "* Small forest mammals include snowshoe hares, squirrels, marten, fisher, and porcupine.\n** Small open mammals include racoons, jack rabbits, skunks, badgers, among others.") +
   theme(legend.position = "bottom",
@@ -74,5 +76,12 @@ df_edd %>%
         axis.text.x = element_text(angle = 45, hjust = 1))
 
 ```
+
+<br>
+
+<center>
+Next: [Density at individual deployments](link) <br>
+Previous: [Time in field of view](link)
+</center>
 
 <br>

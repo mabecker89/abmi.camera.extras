@@ -19,7 +19,7 @@ Use the map to toggle between sampling year and species name to find where eleve
 root <- "G:/Shared drives/ABMI Camera Mammals/"
 
 library(sf)
-# devtools::install_github("rstudio/crosstalk", ref = "joe/feature/filter-select-default")
+#devtools::install_github("rstudio/crosstalk", ref = "joe/feature/filter-select-default")
 library(crosstalk)
 library(readr)
 library(dplyr)
@@ -79,5 +79,11 @@ map1
 
 ```
 
-Next: [Image summaries](link)
-Previous: [Method overview](link)
+<br>
+
+<center>
+Next: [Method Overview](link) <br>
+Previous: [Image Summaries](link)
+</center>
+
+<br>

@@ -4,54 +4,19 @@ title: "Estimate density in an area of interest"
 
 ```{r, include=TRUE, echo=FALSE}
 library(knitr)
+library(dplyr)
+library(abmi.camera.extras)
+library(abmi.themes)
+library(ggplot2)
 # Set knitr chunk options
 opts_chunk$set(include=TRUE, echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE)
 ```
 
-## Overview
+## Using abmi.camera.extras
 
-This package provides access to the Alberta Biodiversity Monitoring Institute's (ABMI) camera-level animal density estimates, which can be used to estimate the density (and associated confidence bounds) of various species in a user-defined area of interest. For more information on how the ABMI estimates animal density from camera data, please review this [report](https://www.abmi.ca/home/publications/501-550/516) and visit this [repository](https://github.com/ABbiodiversity/mammals-camera) for associated code base.
+This package provides access to the Alberta Biodiversity Monitoring Institute's (ABMI) camera-level animal density estimates, which can be used to estimate the density (and associated confidence bounds) of various species in a user-defined area of interest.
 
-This package currently contains data from ABMI camera deployments in the following years:
-
-<br>
-
-```{r, echo=FALSE, fig.height=5, fig.showtext=TRUE}
-
-library(abmi.camera.extras)
-library(ggplot2)
-library(dplyr)
-library(abmi.themes)
-
-data("public_locations")
-
-# Add ABMI fonts
-add_abmi_fonts()
-
-p <- public_locations %>%
-  mutate(samp_per = as.factor(samp_per)) %>%
-  ggplot(aes(x = samp_per, fill = samp_per)) +
-  geom_bar(stat = "count", color = "black", width = 0.7) +
-  theme_abmi(font = "Montserrat") +
-  scale_fill_abmi(palette = "flowers", reverse = TRUE) +
-  scale_y_continuous(breaks = seq(0,800,100), limits = c(0,800)) +
-  labs(x = "",
-       y = "",
-       title = "Number of ABMI Camera Deployments",
-       subtitle = "By Sampling Year",
-       caption = "Only data from ABMI core sites are included as part of this package.") +
-  theme(legend.position = "none",
-        title = element_text(size = 8))
-
-p_dat <- layer_data(p)
-
-p <- p + annotate(geom = "text", label = p_dat$count, x = p_dat$x, y = p_dat$y + 30, size = 3)
-
-add_logo(p)
-
-```
-
-This data includes density information on the following species:
+This package currently contains data from ABMI camera deployments put out between 2014 and 2019, as well as data on the following species:
 
 + White-tailed Deer
 + Mule deer
@@ -79,7 +44,7 @@ sf_cities <- canada.cities %>%
   st_as_sf(coords = c("long", "lat"), crs = "+init=epsg:4326", remove = FALSE)
 
 sf_ab <- sf::st_read(system.file("extdata/ab.shp", package = "abmi.camera.extras"), quiet = TRUE)
-
+data("public_locations")
 sf_locations <- st_as_sf(public_locations, coords = c("public_longitude", "public_latitude"), crs = "+init=epsg:4326")
 
 ggplot() + 
@@ -132,6 +97,7 @@ sf_wmu <- sf::st_read(system.file("extdata/wmu_sample.shp", package = "abmi.came
 tibble::glimpse(sf_wmu)
 
 ```
+
 Next, we subset ABMI camera deployments spatially with the `ace_get_cam()` function:
 
 ```{r warning=FALSE}
@@ -171,7 +137,9 @@ The distribution of density values is typically right-skewed, with most cameras 
 
 <br>
 
-``` {r echo=FALSE, fig.showtext=TRUE, fig.height=5}
+``` {r echo=FALSE, fig.showtext=TRUE, out.width="80%"}
+
+add_abmi_fonts()
 
 # View distribution
 p1 <- ggplot(df_dens, aes(x = density, fill = common_name)) +
@@ -281,7 +249,12 @@ add_logo(p2)
 
 <br>
 
+<center>
+Next: [Important assumptions](link) <br>
+Previous: [Lure adjustments](link)
+</center>
 
+<br>
 
 
 

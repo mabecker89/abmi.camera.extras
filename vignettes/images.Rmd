@@ -60,7 +60,7 @@ Here we display the number of camera deployments that have been placed by the AB
 
 <br>
 
-```{r out.width="90%", fig.showtext=TRUE}
+```{r out.width="80%", fig.showtext=TRUE}
 
 add_abmi_fonts()
 
@@ -80,7 +80,7 @@ p1 <- deployments %>%
         legend.title = element_blank(),
         title = element_text(size = 10))
 
-add_logo(p1)
+p1
 
 ```
 
@@ -92,7 +92,7 @@ We summarise the number of images captured by species between 2013 and 2019 for 
 
 <br>
 
-```{r out.width="90%", fig.showtext=TRUE}
+```{r out.width="80%", fig.showtext=TRUE}
 
 p2 <- df_abmi_native %>%
   ggplot(aes(x = common_name, y = images, fill = common_name)) +
@@ -113,7 +113,7 @@ p2 <- df_abmi_native %>%
         axis.text.x = element_text(size = 12, hjust = 1, angle = 45),
         title = element_text(size = 10))
 
-add_logo(p2)
+p2
 
 ```
 
@@ -121,5 +121,11 @@ add_logo(p2)
 
 White-tailed and Mule deer account for a large percentage of images taken to-date by remote cameras, following by moose, elk, and black bear.
 
+<br>
+
+<center>
 Next: [Species Detections](link)
+</center>
+
+<br>
 

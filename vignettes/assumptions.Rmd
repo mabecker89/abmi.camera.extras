@@ -1,0 +1,40 @@
+---
+title: "Assumptions of the camera density index"
+---
+
+```{r, include=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  include=TRUE, echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE
+)
+
+```
+
+There are a number of strong assumptions involved in using this measure to give absolute density of a species:
+
++ **Assumption 1: The cameras are a random or otherwise representative sample of the area.** As mentioned in the first section, density is calculated for the area in the fields-of-view of the cameras. To make inferences about density over a larger region, those fields-of-view need to represent the larger region (as is the case for any sampling). This means that cameras are not intentionally put along trails or other features that attract animals. Unfortunately, it also means that cameras should be placed in micro-habitats randomly. This is not possible logistically, because the cameras need some open space in front of them. 
+
+    This practical limitation on camera micro-locations creates problems for interpreting habitat models when habitat types differ in amount of suitably open micro-habitats, if animals either favour or avoid those more open habitats. We are really surveying the use of suitably open micro-habitats within larger habitat types. Micro-habitat selectivity may also create uncertainty in trend, if there are substantial changes in habitat types and the amount of suitable open micro-habitats. Violations of this assumption do not intuitively seem like major potential sources of bias, but it isn’t clear how we would evaluate their effect rigorously.
+    
+    A more pervasive problem in the south of the province is that we cannot deploy cameras in active cultivated areas, so we use adjacent fence lines, leave strips or woodlot edges. Several species clearly favour those areas. This complicates interpretation of habitat use and trend in extensively cultivated regions, particularly as amount of those edge features changes over time. We would ideally be treating our design as a stratified sample, but we do not have the resources to estimate the areas of the strata we are sampling non-proportionally (or even to define them well) – i.e., we do not know the areas represented by the types of fence lines, woodlots, etc. that can accommodate cameras, and we do not track how those change over time. Interpreting trends from cameras in the south will require more substantive assumptions.
+
+    Cameras could potentially be deployed along game trails, if the design also included some cameras off of these trails, and the results were analysed as a stratified sample of the region. The difficulty again is in determining the area of the “game trail” and “not game trail” strata for whatever units the study is comparing (habitat types, years if the goal is to measure population change).  Extremely detailed ecological information would be needed to know what constitutes a game trail – e.g., the first seismic line put into a forested area versus the hundredth, linear features in open areas, what happens if a natural game trail is clearcut or burned, etc.?
+
++ **Assumption 2: Animals are not attracted to or repelled by the cameras, and they do not change their behaviour (time spent in front of the camera) because of the cameras.** This is clearly not true for some species, such as bears and moose that regularly investigate the camera and the pole we use to measure detection distance, even when the deployment does not have a lure. It is also violated when cameras are deployed in winter and animals follow the snowshoe tracks in front of the camera, which is frequently seen in the days after winter deployments. These effects increase density estimates. For habitat models or trend that only need relative density, we will have to assume that these effects do not vary substantially by habitat type or between years. Because we have images, we could measure whether species spend different amounts of time investigating the camera or unlured poles in different habitats and whether that changes over time. We could then potentially correct for the biasing effects in habitat models or trend estimates. We have not yet tried that to see how well it works.
+
++ **Assumption 3: The method to estimate detection distances in different habitats assumes that the animal is certain to be detected within the 5m band.**  Some smaller animals can pass right in front of the camera undetected. This is a concern even using relative abundance for habitat models, if there is substantially higher non-detection in some habitat types, such as shrubby areas or habitats with abundant downed wood. It could also be a concern for trend, if there are large habitat changes that affect detectability near the camera. The assumption seems to be good for animals the size of coyotes or larger, but we only have a small trial that tested that.
+
++ **Assumption 4: If camera deployment dates are not the same everywhere or standardized to a common period, the method also assumes that there is no major seasonal variation in detectability of a species.** In other words, if the previous 3 assumptions are violated, those violations do not differ by time of year. The best approach is to ensure that cameras are deployed at the same time, or at least that they are all operating for a useably long common set of dates. Alternatively, we will need to find ways to adjust for some cameras (potentially in different habitats or years) sampling more at seasons when a species is more or less detectable.
+
++ **Assumption 5: The presence of an animal does not reduce the camera operating time.** This assumption is unfortunately violated fairly often when animals, mainly bears, disable cameras. In addition to the extra time in front of the camera that this behaviour produces (violating assumption 2), this also reduces the operating time of the camera, including for all future times when the animal would not be present. Both effects bias density estimates of the camera-destroying species upwards. The bias can be very large when bears disable cameras shortly after deployment. We use a minimum cut-off of 10 operating days to reduce the extreme problems, but we still have cameras that are destroyed shortly after that cut-off that produce very high density estimates. We could omit the last series for an animal that disables a camera, but there are other problems with that solution - it would bias estimates downwards since it removes an animal that would probably have been detected anyway, and there are also often several series of the species in the hours or days(s) before the camera is disabled, which would require a set of timing rules to be developed.
+
+    Calibration of cameras, as technology changes or existing cameras age, is discussed separately (section 8), but is anticipated to require serious effort. Lures, which violate assumption 2, can be accommodated if there is a rigorous design that allows their effects to be estimated (section 7). For both of these corrections, it is important to remember that any uncertainty in the correction factor becomes uncertainty in the main scientific questions the cameras are meant to address. An imprecise correction for changing technology over time, for example, would add directly to the imprecision of any trend estimates. There is no point in putting in the sampling effort needed for a precise trend estimate if the effort is not put in to get a correspondingly precise calibration coefficient when technology changes.
+    
+<br>
+
+<center>
+Previous: [Density in an area of interest (AOI)](link)
+</center>
+
+<br>
