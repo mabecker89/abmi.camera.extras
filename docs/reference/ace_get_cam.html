@@ -6,14 +6,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Subset camera deployments by a specified spatial area of interest — ace_get_cam • abmi.camera.extras</title>
+<title>Subset camera deployments by a specified spatial area of interest — ace_get_cam • ABMI Cameras</title>
 
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -71,7 +71,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">abmi.camera.extras</a>
+        <a class="navbar-link" href="../index.html">ABMI Cameras</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
       </span>
     </div>
@@ -95,7 +95,16 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/working_with_abmi_camera_data_in_R.html">Estimating Animal Density Using Camera Data</a>
+      <a href="../articles/01_overview.html">Overview of the method</a>
+    </li>
+    <li>
+      <a href="../articles/02_gaps.html">Develop models for probabilistic gaps</a>
+    </li>
+    <li>
+      <a href="../articles/03_aoi-density.html">Estimate density in an area of interest</a>
+    </li>
+    <li>
+      <a href="../articles/detections.html">Species Detections</a>
     </li>
   </ul>
 </li>
@@ -163,7 +172,7 @@
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>sf</span>)</div><div class='output co'>#&gt; <span class='message'>Linking to GEOS 3.8.0, GDAL 3.0.4, PROJ 6.3.1</span></div><div class='input'><span class='co'># Example aoi of four Wildlife Management Units (WMUs) in Alberta:</span>
-<span class='no'>wmu_sample</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_read.html'>st_read</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/wmu_sample.shp"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"abmi.camera.extras"</span>))</div><div class='output co'>#&gt; Reading layer `wmu_sample' from data source `C:\Users\mabec\Documents\R\win-library\4.0\abmi.camera.extras\extdata\wmu_sample.shp' using driver `ESRI Shapefile'
+<span class='no'>wmu_sample</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/sf/man/st_read.html'>st_read</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata/wmu_sample.shp"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"abmi.camera.extras"</span>))</div><div class='output co'>#&gt; Reading layer `wmu_sample' from data source `C:\Users\mabec\AppData\Local\Temp\RtmpKCoVr5\temp_libpath165c712b2512\abmi.camera.extras\extdata\wmu_sample.shp' using driver `ESRI Shapefile'
 #&gt; Simple feature collection with 4 features and 5 fields
 #&gt; geometry type:  POLYGON
 #&gt; dimension:      XY

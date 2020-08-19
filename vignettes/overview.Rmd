@@ -1,9 +1,5 @@
 ---
 title: "Overview of the method"
-pkgdown:
-  as_is: true
-resource_files:
-  - vignettes/images/density.png
 ---
 
 ```{r, include = FALSE}
@@ -28,9 +24,11 @@ $$Density = \frac{\sum(number~of~individuals~*~time~in~field~of~view)}{area~of~f
 
 The units are animal-seconds per area-seconds, which equates to animals per area (i.e. density).
 
+<br>
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.cap="Illustration of density for a tree quadrat and camera surveys.", fig.align="center"}
 
-knitr::include_graphics("C:/Users/mabec/Documents/R/abmi.camera.extras/docs/articles/images/density.png")
+knitr::include_graphics(here("docs/articles/images/density.png"))
 
 ```
 

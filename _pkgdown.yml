@@ -1,0 +1,51 @@
+template:
+  params:
+    bootswatch: flatly
+
+title: "ABMI Cameras"
+
+navbar:
+  title: "ABMI Cameras"
+  structure:
+    left:
+      - Data
+      - Methods
+      - Functions
+    right:
+      - Github
+      - Twitter
+  components:
+    Data:
+      text: Data
+      menu:
+        - text: "Image summaries"
+          href: articles/images.html
+        - text: "Species detection"
+          href: articles/detections.html
+    Methods:
+      text: Methods
+      menu:
+        - text: "Overview"
+          href: articles/overview.html
+        - text: "Probabilistic gaps"
+          href: articles/gaps.html
+        - text: "Deployment timeframes"
+          href: articles/timeframes.html
+        - text: "Time in field of view"
+          href: articles/fov.html
+        - text: "Effective detection distance"
+          href: articles/edd.html
+        - text: "Density at individual deployments"
+          href: articles/dep-density.html
+        - text: "Density in an area of interest (AOI)"
+          href: articles/aoi-density.html
+    Functions:
+      text: Functions
+      href: reference/index.html
+    Github:
+      icon: fa-github
+      href: https://github.com/mabecker89/abmi.camera.extras/
+    Twitter:
+      icon: fa-twitter
+      href: https://twitter.com/ABbiodiversity
+

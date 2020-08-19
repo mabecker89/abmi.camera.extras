@@ -1,0 +1,212 @@
+---
+title: "Camera Timeframes"
+---
+
+```{r, include=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  include=TRUE, echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE
+)
+
+# Attach packages
+library(ggplot2)
+library(abmi.themes)
+library(readr)
+library(dplyr)
+library(stringr)
+library(forcats)
+library(lubridate)
+library(tidyr)
+library(tibble)
+
+# Root to Google Drive folders
+root <- "G:/Shared drives/ABMI Camera Mammals/"
+
+# Load data
+
+# Camera operating time ranges
+df_cam_startend <- read_csv(paste0(root, "data/lookup/start-end/all-cam_startend_2020-06-01.csv"))
+
+# Time since 2009
+time.since.2009 <- read_csv(paste0(root, "data/processed/time-by-day/abmi-all-years_tbd-since-2009_2020-08-14.csv"))
+
+# Time by day summary
+df_tbd_summary <- read_csv(paste0(root, "data/processed/time-by-day/abmi-all-years_tbd-summary_2020-06-08.csv"))
+
+add_abmi_fonts()
+
+# Load plotting functions
+source(paste0(root, "src/R/plotting.R"))
+
+# Year-specific colours
+pal2015 <- "#2D415B"
+pal2016 <- "#746D86"
+pal2017 <- "#829EBC"
+pal2018 <- "#D5A394"
+pal2019 <- "#A8AF8C"
+
+```
+
+## Time cameras are operating
+
+The next ingredient in the density calculation is accounting for the total time that the camera deployments are operating. For many cameras, the total operating time is simply the time from just after the initial set-up to just before the final collection. However, some cameras fail before they are picked up, most often because they run out of memory or battery power after taking many pictures of cows, vegetation or occasionally perching birds. Other cameras fail because they fall over or are knocked over by cows. We use specific criteria for determining when a camera is too displaced to use – if the 5m pole is no longer in the image field, or the camera is tilted >30° from horizontal. Some of those may be re-established either during a mid-season visit or simply when the camera tilts back (e.g. if it is on a post that cows lean on), leading to a gap in operating time for the camera.
+
+The time that each ABMI camera was operating are illustrated in the plots below. Many off-grid cameras, which target specific habitat types to improve habitat models or address other specific questions, or non-ABMI studies incorporated into the ABMI database, are set out at different times on-grid cameras. Recent years have included some cameras that were deployed in the fall and left out through the winter and following summer. Variation in start and end dates has increased over the four years, due to operational logistics (crew availability and site access). Cameras in the south-central part of the province were more likely to have short operating times because of cows. Besides creating different total operating times that need to be included in the density estimates, the varying deployment periods interact with seasonal variation in detectability of different species, which we need to address in the analysis.
+
+### Deployment durations {.tabset}
+
+The following plots illustrate the patterns of camera placement and take-down (or failure) over the course of each field season.
+
+#### 2015
+
+```{r, fig.showtext=TRUE}
+
+plot_abmi_deployment_durations(x = df_cam_startend, samp_per = "2015", segment_colour = pal2015)
+
+```
+
+#### 2016
+
+```{r, fig.showtext=TRUE}
+
+plot_abmi_deployment_durations(x = df_cam_startend, samp_per = "2016", segment_colour = pal2016)
+
+```
+
+#### 2017
+
+```{r, fig.showtext=TRUE}
+
+plot_abmi_deployment_durations(x = df_cam_startend, samp_per = "2017", segment_colour = pal2017)
+
+```
+
+#### 2018
+
+```{r, fig.showtext=TRUE}
+
+plot_abmi_deployment_durations(x = df_cam_startend, samp_per = "2018", segment_colour = pal2018)
+
+```
+
+#### 2019
+
+```{r, fig.showtext=TRUE}
+
+plot_abmi_deployment_durations(x = df_cam_startend, samp_per = "2019", segment_colour = pal2019)
+
+```
+
+### Total deployments over time {.tabset}
+
+These plots show the total number of cameras operating at each point in time over the course of a sampling season.
+
+#### 2015 
+
+```{r, fig.showtext=TRUE}
+
+plot_abmi_deployments_over_time(x = time.since.2009,
+                                y = df_cam_startend,
+                                samp_per = "2015",
+                                area_colour = pal2015,
+                                annotate_colour = "white",
+                                date_breaks_x = "1 month")
+
+```
+
+#### 2016
+
+```{r, fig.showtext=TRUE}
+
+plot_abmi_deployments_over_time(x = time.since.2009,
+                                y = df_cam_startend,
+                                samp_per = "2016",
+                                area_colour = pal2016,
+                                annotate_colour = "black",
+                                date_breaks_x = "2 months")
+
+```
+
+#### 2017
+
+```{r, fig.showtext=TRUE}
+
+plot_abmi_deployments_over_time(x = time.since.2009,
+                                y = df_cam_startend,
+                                samp_per = "2017",
+                                area_colour = pal2017,
+                                annotate_colour = "black",
+                                date_breaks_x = "2 months")
+
+```
+
+#### 2018
+
+```{r, fig.showtext=TRUE}
+
+plot_abmi_deployments_over_time(x = time.since.2009,
+                                y = df_cam_startend,
+                                samp_per = "2018",
+                                area_colour = pal2018,
+                                annotate_colour = "black",
+                                date_breaks_x = "2 months")
+
+```
+
+#### 2019
+
+```{r, fig.showtext=TRUE}
+
+plot_abmi_deployments_over_time(x = time.since.2009,
+                                y = df_cam_startend,
+                                samp_per = "2019",
+                                area_colour = pal2019,
+                                annotate_colour = "black",
+                                date_breaks_x = "1 month")
+
+```
+
+### Distribution of duration lengths {.tabset}
+
+Finally, the plots below show the distribution in the number of days that the cameras were operating for each of the field seasons.
+
+#### 2015
+
+```{r, fig.showtext=TRUE}
+
+plot_abmi_operating_days(x = df_tbd_summary, samp_per = "2015", bar_fill = pal2015)
+
+```
+
+#### 2016
+
+```{r, fig.showtext=TRUE}
+
+plot_abmi_operating_days(x = df_tbd_summary, samp_per = "2016", bar_fill = pal2016)
+
+```
+
+#### 2017
+
+```{r, fig.showtext=TRUE}
+
+plot_abmi_operating_days(x = df_tbd_summary, samp_per = "2017", bar_fill = pal2017)
+
+```
+
+#### 2018
+
+```{r, fig.showtext=TRUE}
+
+plot_abmi_operating_days(x = df_tbd_summary, samp_per = "2018", bar_fill = pal2018)
+
+```
+
+#### 2019
+
+```{r, fig.showtext=TRUE}
+
+plot_abmi_operating_days(x = df_tbd_summary, samp_per = "2019", bar_fill = pal2019)
+
+```

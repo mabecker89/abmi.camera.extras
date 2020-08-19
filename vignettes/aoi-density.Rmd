@@ -1,0 +1,288 @@
+---
+title: "Estimate density in an area of interest"
+---
+
+```{r, include=TRUE, echo=FALSE}
+library(knitr)
+# Set knitr chunk options
+opts_chunk$set(include=TRUE, echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE)
+```
+
+## Overview
+
+This package provides access to the Alberta Biodiversity Monitoring Institute's (ABMI) camera-level animal density estimates, which can be used to estimate the density (and associated confidence bounds) of various species in a user-defined area of interest. For more information on how the ABMI estimates animal density from camera data, please review this [report](https://www.abmi.ca/home/publications/501-550/516) and visit this [repository](https://github.com/ABbiodiversity/mammals-camera) for associated code base.
+
+This package currently contains data from ABMI camera deployments in the following years:
+
+<br>
+
+```{r, echo=FALSE, fig.height=5, fig.showtext=TRUE}
+
+library(abmi.camera.extras)
+library(ggplot2)
+library(dplyr)
+library(abmi.themes)
+
+data("public_locations")
+
+# Add ABMI fonts
+add_abmi_fonts()
+
+p <- public_locations %>%
+  mutate(samp_per = as.factor(samp_per)) %>%
+  ggplot(aes(x = samp_per, fill = samp_per)) +
+  geom_bar(stat = "count", color = "black", width = 0.7) +
+  theme_abmi(font = "Montserrat") +
+  scale_fill_abmi(palette = "flowers", reverse = TRUE) +
+  scale_y_continuous(breaks = seq(0,800,100), limits = c(0,800)) +
+  labs(x = "",
+       y = "",
+       title = "Number of ABMI Camera Deployments",
+       subtitle = "By Sampling Year",
+       caption = "Only data from ABMI core sites are included as part of this package.") +
+  theme(legend.position = "none",
+        title = element_text(size = 8))
+
+p_dat <- layer_data(p)
+
+p <- p + annotate(geom = "text", label = p_dat$count, x = p_dat$x, y = p_dat$y + 30, size = 3)
+
+add_logo(p)
+
+```
+
+This data includes density information on the following species:
+
++ White-tailed Deer
++ Mule deer
++ Moose
++ Elk (wapiti)
++ Black Bear
++ Coyote
++ Pronghorn
++ Snowshoe Hare
++ Woodland Caribou
++ Canada Lynx
++ Gray Wolf
+
+Current (as of 2019) geographic coverage of sampling in the province can be seen in the map below:
+
+```{r echo=FALSE}
+
+library(sf)
+library(ggspatial)
+library(maps)
+
+sf_cities <- canada.cities %>%
+  filter(name == "Calgary AB" | name == "Edmonton AB") %>%
+  mutate(name = ifelse(name == "Calgary AB", "Calgary", "Edmonton")) %>%
+  st_as_sf(coords = c("long", "lat"), crs = "+init=epsg:4326", remove = FALSE)
+
+sf_ab <- sf::st_read(system.file("extdata/ab.shp", package = "abmi.camera.extras"), quiet = TRUE)
+
+sf_locations <- st_as_sf(public_locations, coords = c("public_longitude", "public_latitude"), crs = "+init=epsg:4326")
+
+ggplot() + 
+  geom_sf(data = sf_ab, alpha = 0, color = "black", size = 1) +
+  geom_sf(data = sf_locations, size = 1.5, color = "#2D415B") +
+  geom_sf(data = sf_cities, size = 2, color = "darkred") +
+  geom_sf_text(data = filter(sf_cities, name == "Edmonton"), aes(geometry = geometry, label = name), size = 3,
+               nudge_x = -40000, nudge_y = 30000) +
+  theme_void() +
+  annotation_scale(location = "bl", width_hint = 0.3) +
+  annotation_north_arrow(location = "bl", pad_x = unit(0.25, "in"), pad_y = unit(0.40, "in"),
+                         height = unit(0.5, "in"), width = unit(0.5, "in"),
+                         style = north_arrow_fancy_orienteering)
+
+```
+
+Note that there are four cameras deployed at each ABMI site, 600-m apart. Each point on the plot represents a site, which has four deployments. See [here](https://www.abmi.ca/home/publications/551-600/565) for detailed explanation of remote camera trap protocols.
+
+## Features
+
+The primary objective of this package is to allow users to estimate the density of a species of interest in an area of interest. For this objective, three steps are neccessary:
+
+1. Spatially subset ABMI camera deployments by a user-supplied area of interest (or multiple);
+1. Join pre-processed individual deployment density estimates to this spatial subset of cameras;
+1. Summarise density for the area of interest as a whole, including confidence bounds.
+
+## Usage and Recommended Workflow
+
+```{r}
+
+# Load package
+library(abmi.camera.extras)
+
+# Load packages for working with spatial data and plotting results
+library(sf)
+# Note: sp objects will also work.
+# library(sp)
+library(ggplot2)
+
+```
+
+The first step is to define an area of interest, such as a Wildlife Management Unit, Municipality, Land Use Planning Region, etc. Below, this is done using the `sf` package to read into R a shapefile of four WMUs - Crow Lake (code 512), Lac La Biche (503), Beaver River (502), and Amisk (504) - all of which are located in the central-east part of Alberta. 
+
+```{r}
+
+# Define aoi
+sf_wmu <- sf::st_read(system.file("extdata/wmu_sample.shp", package = "abmi.camera.extras"), quiet = TRUE)
+
+# Take a look at structure and attributes
+tibble::glimpse(sf_wmu)
+
+```
+Next, we subset ABMI camera deployments spatially with the `ace_get_cam()` function:
+
+```{r warning=FALSE}
+
+# Retrieve deployments in aoi as dataframe
+df_deployments <- ace_get_cam(aoi = sf_wmu,
+                              group_id = WMUNIT_NAM, # Use `id` to define identifier (e.g. WMU name)
+                              crs = 4326) # If desired, (re)project using the `crs` argument
+
+# Plot deployments
+sf_wmu <- st_transform(sf_wmu, "+init=epsg:4326")
+plot(df_deployments$geometry, pch = 21, cex = 0.7, col = "#2D415B", bg = "gray80")
+plot(sf_wmu$geometry, border = "gray20", col = NA, add = TRUE)
+# Remember that each point represents an ABMI site, which has four camera deployments spaced 600-m apart. 
+
+```
+
+Users may wish to spatially subset their own dataframe of camera deployments locations, instead of retrieving the ABMI's. This can be done by supplying the `dep = ` argument in `ace_get_cam()`, along with specifying which columns hold the lat/long coordinates in the `coords = ` argument.
+
+From here we can join density estimates for a species of interest in a given sampling period for each deployment using the `ace_join_dens()` function:
+
+```{r warning=FALSE}
+
+# Join density
+df_dens <- ace_join_dens(x = df_deployments,
+                         species = c("Moose", "White-tailed Deer"), # See ?ace_join_dens for list of available species
+                         # samp_per = "2018", option to define specific sampling period if desired
+                         nest = FALSE)
+
+head(df_dens, 10)
+
+```
+
+Note that the `samp_per` column refers to *sampling period*, which, in the case of the ABMI, is done yearly.
+
+The distribution of density values is typically right-skewed, with most cameras not detecting any individuals (0 density), some that detect a small number of individuals just passing by (low density), and a few who capture longer periods of animal activity (high density).
+
+<br>
+
+``` {r echo=FALSE, fig.showtext=TRUE, fig.height=5}
+
+# View distribution
+p1 <- ggplot(df_dens, aes(x = density, fill = common_name)) +
+  geom_histogram(bins = 15) +
+  coord_cartesian(ylim = c(0,30)) +
+  facet_grid(common_name ~ WMUNIT_NAM) +
+  theme_abmi() +
+  scale_fill_abmi(palette = "main") +
+  labs(x = expression(Density~(individuals~per~km^2)),
+       y = "Number of Deployments",
+       title = "Distribution in estimated Moose and White-Tailed Deer density at\nindividual ABMI camera deployments in four WMUs.") +
+  theme(legend.position = "none",
+        title = element_text(size = 8))
+
+add_logo(p1)
+
+```
+
+<br>
+
+The last step is to estimate the density of each of the species defined previously in the area of the interest, which can be done with the `ace_summarise_dens()` function.
+
+```{r}
+
+# Summarise density
+df_dens_summary <- ace_summarise_dens(x = df_dens,
+                                      group_id = WMUNIT_NAM, # to group deployments when evaluating multiple aoi or treatments
+                                      agg_samp_per = TRUE, # option to aggregate sampling periods
+                                      samp_per_col = samp_per, # to indicate which column refers to sampling period to group on
+                                      species_col = common_name, # to indicate which column refers to species to group on
+                                      dens_col = density, # column where density values are held
+                                      conflevel = 0.9) # for confidence interval - default 90%
+
+```
+
+Note that `ace_summarise_dens()` can be used independently of the first two functions if the user wishes to summarise external density data. If supplying your own dataframe (i.e. df_dens), rather than using output from the first two functions, make sure that the data is formated in a [tidy way](https://r4ds.had.co.nz/tidy-data.html). Each row should represent an observation of density at a single deployment, and each column a variable (e.g. species, treatment, sampling period). The arguments `samp_per_col`, `species_col`, and `dens_col` can be used to customize the call of `ace_summarise_dens` to suit your data. 
+
+The output is a dataframe with the following attributes (beside the grouping variable, year, and species):
+
++ `occupied` - number of deployments with a individual of that species present
++ `n_deployments` - total number of deployments
++ `prop_occupied` - proportion of deployments occupied
++ `density_avg` - estimated density for the area/year/species combination
++ `density_lci` - lower bounds of confidence interval (level specified in `conflevel` attribute)
++ `density_uci` - upper bounds of confidence interval
+
+The precision of the density value is estimated through Monte Carlo simulation using the [delta method](https://en.wikipedia.org/wiki/Delta_method). Note that some ABMI camera deployments are set up with a lure; the subsequent density estimates have been adjusted to facilitate comparison with non-lured estimates when summarising animal density for an aoi. 
+
+Note that this family of three functions is designed to work with a [pipeline-based workflow](https://r4ds.had.co.nz/pipes.html), and can be re-written in the following way:
+
+```{r}
+
+# Pipeline workflow
+df_dens_summary <- sf_wmu %>%
+  ace_get_cam(group_id = WMUNIT_NAM) %>%
+  ace_join_dens(species = c("Moose", "White-tailed Deer")) %>%
+  ace_summarise_dens(group_id = WMUNIT_NAM, agg_samp_per = FALSE, 
+                     samp_per_col = samp_per, conflevel = 0.9)
+
+# Results from Crow Lake WMU
+df_dens_summary %>%
+  ungroup() %>%
+  mutate(common_name = ifelse(common_name == "White-tailed Deer", "WTD", common_name)) %>%
+  rename(WMU = WMUNIT_NAM, year = samp_per, species = common_name) %>%
+  filter(WMU == "Crow Lake") %>%
+  mutate(WMU = "512") %>%
+  arrange(species, year) %>%
+  kable()
+
+```
+
+We can visualize the density results (this time aggregated by year, or sampling period) like so:
+
+```{r}
+
+df_dens_summary_agg <- sf_wmu %>%
+  ace_get_cam(group_id = WMUNIT_NAM) %>%
+  ace_join_dens(species = c("Moose", "White-tailed Deer")) %>%
+  ace_summarise_dens(group_id = WMUNIT_NAM, agg_samp_per = TRUE, conflevel = 0.9)
+
+```
+
+<br>
+
+```{r echo=FALSE, fig.showtext=TRUE}
+
+p2 <- ggplot(data = df_dens_summary_agg, aes(x = WMUNIT_NAM, y = density_avg,
+                              ymin = density_lci_0.9, ymax = density_uci_0.9,
+                              color = common_name)) +
+  geom_errorbar(width = 0.3, size = 1.25) +
+  geom_point(size = 4) +
+  coord_flip() +
+  facet_wrap(~ common_name, nrow = 4) +
+  scale_color_abmi(palette = "main") +
+  labs(x = "", y = expression(Density~(individuals~per~km^2)),
+       title = "Estimated density with 90% confidence interval",
+       caption = "Note that sampling periods (years) are aggregated in the results presented in this figure.") +
+  theme_abmi() +
+  theme(panel.grid.major = element_blank(),
+        legend.position = "none",
+        strip.text = element_text(size = 13),
+        plot.title = element_text(size = 16))
+
+add_logo(p2)
+
+```
+
+<br>
+
+
+
+
+
+

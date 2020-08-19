@@ -1,0 +1,52 @@
+---
+title: "Adjusting for Lure Effects"
+---
+
+```{r, include=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  include=TRUE, echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE
+)
+
+# Attach packages
+library(readr)
+library(dplyr)
+library(stringr)
+library(forcats)
+library(tidyr)
+library(ggplot2)
+library(abmi.themes)
+
+# Path to Google Drive
+root <- "G:/Shared drives/ABMI Camera Mammals/"
+
+# Lure lookup
+df_lure <- read_csv(paste0(root, "data/lookup/lure/all-cam-lure_2020-06-01.csv"))
+
+# Read in density data:
+df_density <- read_csv(paste0(root, "results/density/Marcus/abmi-all-years_density_2020-07-30.csv"))
+
+```
+
+```{r}
+
+# Filter for only ABMI core site estimates:
+df_density_abmi_core <- df_density %>%
+  filter(str_detect(name_year, "ABMI"),
+         !str_detect(name_year, "OG"))
+
+# Calculate lure:unlured density ratios:
+df_lure_ratios <- df_lure %>%
+  unite(col = "name_year", name, year, sep = "_", remove = FALSE) %>%
+  right_join(df_density_abmi_core, by = "name_year") %>%
+  filter(common_name %in% species) %>%
+  group_by(common_name, lure, year) %>%
+  filter(!is.na(lure),
+         !density_km2 == "Inf") %>%
+  summarise(avg_density = mean(density_km2, na.rm = TRUE),
+            uci = quantile(density_km2, 0.95, na.rm = TRUE),
+            lci = quantile(density_km2, 0.05, na.rm = TRUE))
+
+```
+
