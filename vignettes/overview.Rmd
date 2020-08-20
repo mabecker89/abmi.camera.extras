@@ -57,8 +57,10 @@ A final consideration is the sampling distribution of density estimates. Because
 <br>
 
 <center>
-Next: [Probabilistic gaps](link) <br>
-Previous: [Species detections](link)
+Next: [Probabilistic gaps](https://mabecker89.github.io/abmi.camera.extras/articles/gaps.html) 
+<br>
+<br>
+Previous: [Species detections](https://mabecker89.github.io/abmi.camera.extras/articles/detections.html)
 </center>
 
 <br>

@@ -77,8 +77,10 @@ df_lure %>%
 <br>
 
 <center>
-Next: [Density in an area of interest (AOI)](link) <br>
-Previous: [Density at individual deployments](link)
+Next: [Density in an area of interest (AOI)](https://mabecker89.github.io/abmi.camera.extras/articles/aoi-density.html) 
+<br>
+<br>
+Previous: [Density at individual deployments](https://mabecker89.github.io/abmi.camera.extras/articles/dep-density.html)
 </center>
 
 <br>

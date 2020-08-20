@@ -41,7 +41,6 @@
   <a href="../index.html">
     <span class="fa fa-home"></span>
      
-    Home
   </a>
 </li>
 <li class="dropdown">
@@ -129,14 +128,6 @@
 
     
     
-<pre><code>## 
-## Attaching package: 'dplyr'</code></pre>
-<pre><code>## The following objects are masked from 'package:stats':
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union</code></pre>
 <div id="using-abmi-camera-extras" class="section level2">
 <h2 class="hasAnchor">
 <a href="#using-abmi-camera-extras" class="anchor"></a>Using abmi.camera.extras</h2>
@@ -172,7 +163,7 @@
 <div id="usage-and-recommended-workflow" class="section level2">
 <h2 class="hasAnchor">
 <a href="#usage-and-recommended-workflow" class="anchor"></a>Usage and Recommended Workflow</h2>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="co"># Load package</span>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="co"># Load package</span>
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">abmi.camera.extras</span>)
 
 <span class="co"># Load packages for working with spatial data and plotting results</span>
@@ -181,7 +172,7 @@
 <span class="co"># library(sp)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ggplot2</span>)</pre></body></html></div>
 <p>The first step is to define an area of interest, such as a Wildlife Management Unit, Municipality, Land Use Planning Region, etc. Below, this is done using the <code>sf</code> package to read into R a shapefile of four WMUs - Crow Lake (code 512), Lac La Biche (503), Beaver River (502), and Amisk (504) - all of which are located in the central-east part of Alberta.</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="co"># Define aoi</span>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="co"># Define aoi</span>
 <span class="no">sf_wmu</span> <span class="kw">&lt;-</span> <span class="kw pkg">sf</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/sf/man/st_read.html">st_read</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/wmu_sample.shp"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"abmi.camera.extras"</span>), <span class="kw">quiet</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
 
 <span class="co"># Take a look at structure and attributes</span>
@@ -195,7 +186,7 @@
 ## $ Shape_STLe &lt;dbl&gt; 476404.3, 355774.1, 293530.4, 252285.2
 ## $ geometry   &lt;POLYGON [m]&gt; POLYGON ((754560.7 6209247,..., POLYGON ((713202...</code></pre>
 <p>Next, we subset ABMI camera deployments spatially with the <code><a href="../reference/ace_get_cam.html">ace_get_cam()</a></code> function:</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="co"># Retrieve deployments in aoi as dataframe</span>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="co"># Retrieve deployments in aoi as dataframe</span>
 <span class="no">df_deployments</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/ace_get_cam.html">ace_get_cam</a></span>(<span class="kw">aoi</span> <span class="kw">=</span> <span class="no">sf_wmu</span>,
                               <span class="kw">group_id</span> <span class="kw">=</span> <span class="no">WMUNIT_NAM</span>, <span class="co"># Use `id` to define identifier (e.g. WMU name)</span>
                               <span class="kw">crs</span> <span class="kw">=</span> <span class="fl">4326</span>) <span class="co"># If desired, (re)project using the `crs` argument</span>
@@ -205,10 +196,10 @@
 <span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="no">df_deployments</span>$<span class="no">geometry</span>, <span class="kw">pch</span> <span class="kw">=</span> <span class="fl">21</span>, <span class="kw">cex</span> <span class="kw">=</span> <span class="fl">0.7</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="st">"#2D415B"</span>, <span class="kw">bg</span> <span class="kw">=</span> <span class="st">"gray80"</span>)
 <span class="fu"><a href="https://rdrr.io/pkg/sf/man/plot.html">plot</a></span>(<span class="no">sf_wmu</span>$<span class="no">geometry</span>, <span class="kw">border</span> <span class="kw">=</span> <span class="st">"gray20"</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="fl">NA</span>, <span class="kw">add</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
 <p><img src="aoi-density_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"># Remember that each point represents an ABMI site, which has four camera deployments spaced 600-m apart. </pre></body></html></div>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"># Remember that each point represents an ABMI site, which has four camera deployments spaced 600-m apart. </pre></body></html></div>
 <p>Users may wish to spatially subset their own dataframe of camera deployments locations, instead of retrieving the ABMI’s. This can be done by supplying the <code>dep =</code> argument in <code><a href="../reference/ace_get_cam.html">ace_get_cam()</a></code>, along with specifying which columns hold the lat/long coordinates in the <code>coords =</code> argument.</p>
 <p>From here we can join density estimates for a species of interest in a given sampling period for each deployment using the <code><a href="../reference/ace_join_dens.html">ace_join_dens()</a></code> function:</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="co"># Join density</span>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="co"># Join density</span>
 <span class="no">df_dens</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/ace_join_dens.html">ace_join_dens</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">df_deployments</span>,
                          <span class="kw">species</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Moose"</span>, <span class="st">"White-tailed Deer"</span>), <span class="co"># See ?ace_join_dens for list of available species</span>
                          <span class="co"># samp_per = "2018", option to define specific sampling period if desired</span>
@@ -245,10 +236,10 @@
 <p>Note that the <code>samp_per</code> column refers to <em>sampling period</em>, which, in the case of the ABMI, is done yearly.</p>
 <p>The distribution of density values is typically right-skewed, with most cameras not detecting any individuals (0 density), some that detect a small number of individuals just passing by (low density), and a few who capture longer periods of animal activity (high density).</p>
 <p><br></p>
-<p><img src="aoi-density_files/figure-html/unnamed-chunk-7-1.png" width="80%"></p>
+<p><img src="aoi-density_files/figure-html/unnamed-chunk-7-1.png" width="80%" style="display: block; margin: auto;"></p>
 <p><br></p>
 <p>The last step is to estimate the density of each of the species defined previously in the area of the interest, which can be done with the <code><a href="../reference/ace_summarise_dens.html">ace_summarise_dens()</a></code> function.</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="co"># Summarise density</span>
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="co"># Summarise density</span>
 <span class="no">df_dens_summary</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/ace_summarise_dens.html">ace_summarise_dens</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">df_dens</span>,
                                       <span class="kw">group_id</span> <span class="kw">=</span> <span class="no">WMUNIT_NAM</span>, <span class="co"># to group deployments when evaluating multiple aoi or treatments</span>
                                       <span class="kw">agg_samp_per</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="co"># option to aggregate sampling periods</span>
@@ -274,7 +265,7 @@
 </ul>
 <p>The precision of the density value is estimated through Monte Carlo simulation using the <a href="https://en.wikipedia.org/wiki/Delta_method">delta method</a>. Note that some ABMI camera deployments are set up with a lure; the subsequent density estimates have been adjusted to facilitate comparison with non-lured estimates when summarising animal density for an aoi.</p>
 <p>Note that this family of three functions is designed to work with a <a href="https://r4ds.had.co.nz/pipes.html">pipeline-based workflow</a>, and can be re-written in the following way:</p>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="co"># Pipeline workflow</span>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="co"># Pipeline workflow</span>
 <span class="no">df_dens_summary</span> <span class="kw">&lt;-</span> <span class="no">sf_wmu</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/ace_get_cam.html">ace_get_cam</a></span>(<span class="kw">group_id</span> <span class="kw">=</span> <span class="no">WMUNIT_NAM</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/ace_join_dens.html">ace_join_dens</a></span>(<span class="kw">species</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Moose"</span>, <span class="st">"White-tailed Deer"</span>)) <span class="kw">%&gt;%</span>
@@ -322,8 +313,8 @@
 <td align="right">15</td>
 <td align="right">0.4000000</td>
 <td align="right">0.4191881</td>
-<td align="right">0.1962585</td>
-<td align="right">0.6813170</td>
+<td align="right">0.1986582</td>
+<td align="right">0.6813437</td>
 </tr>
 <tr class="even">
 <td align="left">512</td>
@@ -333,8 +324,8 @@
 <td align="right">24</td>
 <td align="right">0.4166667</td>
 <td align="right">0.4972947</td>
-<td align="right">0.2872684</td>
-<td align="right">0.7333059</td>
+<td align="right">0.2882175</td>
+<td align="right">0.7376431</td>
 </tr>
 <tr class="odd">
 <td align="left">512</td>
@@ -344,8 +335,8 @@
 <td align="right">24</td>
 <td align="right">0.2500000</td>
 <td align="right">0.2781682</td>
-<td align="right">0.1102678</td>
-<td align="right">0.4934649</td>
+<td align="right">0.1136853</td>
+<td align="right">0.4907323</td>
 </tr>
 <tr class="even">
 <td align="left">512</td>
@@ -355,8 +346,8 @@
 <td align="right">15</td>
 <td align="right">0.2666667</td>
 <td align="right">0.2258010</td>
-<td align="right">0.0645429</td>
-<td align="right">0.4331833</td>
+<td align="right">0.0633170</td>
+<td align="right">0.4410530</td>
 </tr>
 <tr class="odd">
 <td align="left">512</td>
@@ -366,8 +357,8 @@
 <td align="right">15</td>
 <td align="right">0.5333333</td>
 <td align="right">2.1687743</td>
-<td align="right">1.2173618</td>
-<td align="right">3.2369070</td>
+<td align="right">1.2213873</td>
+<td align="right">3.2471132</td>
 </tr>
 <tr class="even">
 <td align="left">512</td>
@@ -377,8 +368,8 @@
 <td align="right">24</td>
 <td align="right">0.7083333</td>
 <td align="right">0.2744533</td>
-<td align="right">0.1993616</td>
-<td align="right">0.3586019</td>
+<td align="right">0.1987014</td>
+<td align="right">0.3598710</td>
 </tr>
 <tr class="odd">
 <td align="left">512</td>
@@ -388,8 +379,8 @@
 <td align="right">24</td>
 <td align="right">0.2916667</td>
 <td align="right">0.1913708</td>
-<td align="right">0.0867657</td>
-<td align="right">0.3185005</td>
+<td align="right">0.0872543</td>
+<td align="right">0.3178532</td>
 </tr>
 <tr class="even">
 <td align="left">512</td>
@@ -399,21 +390,21 @@
 <td align="right">15</td>
 <td align="right">0.6666667</td>
 <td align="right">0.9047140</td>
-<td align="right">0.5431007</td>
-<td align="right">1.3551019</td>
+<td align="right">0.5440383</td>
+<td align="right">1.3312405</td>
 </tr>
 </tbody>
 </table>
 <p>We can visualize the density results (this time aggregated by year, or sampling period) like so:</p>
-<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="no">df_dens_summary_agg</span> <span class="kw">&lt;-</span> <span class="no">sf_wmu</span> <span class="kw">%&gt;%</span>
+<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">df_dens_summary_agg</span> <span class="kw">&lt;-</span> <span class="no">sf_wmu</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/ace_get_cam.html">ace_get_cam</a></span>(<span class="kw">group_id</span> <span class="kw">=</span> <span class="no">WMUNIT_NAM</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/ace_join_dens.html">ace_join_dens</a></span>(<span class="kw">species</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Moose"</span>, <span class="st">"White-tailed Deer"</span>)) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="../reference/ace_summarise_dens.html">ace_summarise_dens</a></span>(<span class="kw">group_id</span> <span class="kw">=</span> <span class="no">WMUNIT_NAM</span>, <span class="kw">agg_samp_per</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">conflevel</span> <span class="kw">=</span> <span class="fl">0.9</span>)</pre></body></html></div>
 <p><br></p>
-<p><img src="aoi-density_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
+<p><img src="aoi-density_files/figure-html/unnamed-chunk-11-1.png" width="700" style="display: block; margin: auto;"></p>
 <p><br></p>
 <center>
-Next: <a href="link">Important assumptions</a> <br> Previous: <a href="link">Lure adjustments</a>
+Next: <a href="https://mabecker89.github.io/abmi.camera.extras/articles/assumptions.html">Important assumptions</a> <br><br> Previous: <a href="https://mabecker89.github.io/abmi.camera.extras/articles/lure.html">Lure adjustments</a>
 </center>
 <p><br></p>
 </div>

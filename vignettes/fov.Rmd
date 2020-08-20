@@ -66,8 +66,10 @@ datatable(df_series_summary_all,
 <br>
 
 <center>
-Next: [Effective detection distance](link) <br>
-Previous: [Deployment timeframes](link)
+Next: [Effective detection distance](https://mabecker89.github.io/abmi.camera.extras/articles/edd.html) 
+<br>
+<br>
+Previous: [Deployment timeframes](https://mabecker89.github.io/abmi.camera.extras/articles/timeframes.html)
 </center>
 
 <br>

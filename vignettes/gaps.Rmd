@@ -62,7 +62,7 @@ We can visualize this data in Figure, which displays the same common species see
 
 <br>
 
-```{r out.width='90%', fig.showtext=TRUE}
+```{r out.width='90%', fig.showtext=TRUE, fig.align='center', fig.height=6}
 
 # Set up ABMI fonts for themed plots
 add_abmi_fonts()
@@ -90,7 +90,7 @@ We used this data to develop models of the probability of a species leaving the 
 
 <br>
 
-```{r, fig.showtext=TRUE, out.width="90%", fig.cap="Probability that an animal leaves the field-of-view, based on clear evidence from the images, for gaps between images of 20-120 seconds."}
+```{r, fig.showtext=TRUE, out.width="90%", fig.cap="Probability that an animal leaves the field-of-view, based on clear evidence from the images, for gaps between images of 20-120 seconds.", fig.height=6, fig.align='center'}
 
 # Individual species predictions (not by group)
 df_leave_prob_pred <- df_leave_prob %>%
@@ -166,8 +166,10 @@ df_tbi %>%
 <br>
 
 <center>
-Next: [Deployment timeframes](link) <br>
-Previous: [Overview](link)
+Next: [Deployment timeframes](https://mabecker89.github.io/abmi.camera.extras/articles/timeframes.html) 
+<br>
+<br>
+Previous: [Overview](https://mabecker89.github.io/abmi.camera.extras/articles/overview.html)
 </center>
 
 <br>

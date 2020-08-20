@@ -214,8 +214,10 @@ plot_abmi_operating_days(x = df_tbd_summary, samp_per = "2019", bar_fill = pal20
 <br>
 
 <center>
-Next: [Time in field of view](link) <br>
-Previous: [Probabilistic gaps](link)
+Next: [Time in field of view](https://mabecker89.github.io/abmi.camera.extras/articles/fov.html) 
+<br>
+<br>
+Previous: [Probabilistic gaps](https://mabecker89.github.io/abmi.camera.extras/articles/gaps.html)
 </center>
 
 <br>

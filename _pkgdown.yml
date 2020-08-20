@@ -6,7 +6,6 @@ template:
 navbar:
   left:
     - icon: fa-home
-      text: "Home"
       href: index.html
     - text: "Data"
       menu:

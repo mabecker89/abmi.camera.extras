@@ -86,8 +86,10 @@ df_density %>%
 <br>
 
 <center>
-Next: [Lure adjustments] <br>
-Previous: [Effective detection distance](link)
+Next: [Lure adjustments](https://mabecker89.github.io/abmi.camera.extras/articles/lure.html)
+<br>
+<br>
+Previous: [Effective detection distance](https://mabecker89.github.io/abmi.camera.extras/articles/edd.html)
 </center>
 
 <br>

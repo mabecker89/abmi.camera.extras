@@ -42,7 +42,7 @@ Below we plot the estimated EDD for different species groups for each of the eig
 
 <br>
 
-```{r, fig.showtext=TRUE, out.width="85%", fig.height=11}
+```{r, fig.showtext=TRUE, out.width="85%", fig.height=11, fig.align='center'}
 
 add_abmi_fonts()
 
@@ -80,8 +80,10 @@ df_edd %>%
 <br>
 
 <center>
-Next: [Density at individual deployments](link) <br>
-Previous: [Time in field of view](link)
+Next: [Density at individual deployments](https://mabecker89.github.io/abmi.camera.extras/articles/dep-density.html) 
+<br>
+<br>
+Previous: [Time in field of view](https://mabecker89.github.io/abmi.camera.extras/articles/fov.html)
 </center>
 
 <br>

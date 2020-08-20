@@ -34,7 +34,7 @@ There are a number of strong assumptions involved in using this measure to give 
 <br>
 
 <center>
-Previous: [Density in an area of interest (AOI)](link)
+Previous: [Density in an area of interest (AOI)](https://mabecker89.github.io/abmi.camera.extras/articles/aoi-density.html)
 </center>
 
 <br>

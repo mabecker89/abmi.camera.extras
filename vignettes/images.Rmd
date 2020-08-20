@@ -60,11 +60,11 @@ Here we display the number of camera deployments that have been placed by the AB
 
 <br>
 
-```{r out.width="80%", fig.showtext=TRUE}
+```{r out.width="75%", fig.showtext=TRUE, fig.align='center', fig.height=6}
 
 add_abmi_fonts()
 
-p1 <- deployments %>%
+deployments %>%
   mutate(year = as.factor(year),
          location = factor(location, levels = c("Off-grid", "Core"))) %>%
   ggplot(aes(x = year, fill = location)) +
@@ -80,8 +80,6 @@ p1 <- deployments %>%
         legend.title = element_blank(),
         title = element_text(size = 10))
 
-p1
-
 ```
 
 <br>
@@ -92,9 +90,9 @@ We summarise the number of images captured by species between 2013 and 2019 for 
 
 <br>
 
-```{r out.width="80%", fig.showtext=TRUE}
+```{r out.width="75%", fig.showtext=TRUE, fig.align='center', fig.height=6}
 
-p2 <- df_abmi_native %>%
+df_abmi_native %>%
   ggplot(aes(x = common_name, y = images, fill = common_name)) +
   geom_col(color = "black") +
   scale_fill_viridis_d() +
@@ -113,8 +111,6 @@ p2 <- df_abmi_native %>%
         axis.text.x = element_text(size = 12, hjust = 1, angle = 45),
         title = element_text(size = 10))
 
-p2
-
 ```
 
 <br>
@@ -124,7 +120,7 @@ White-tailed and Mule deer account for a large percentage of images taken to-dat
 <br>
 
 <center>
-Next: [Species Detections](link)
+Next: [Species Detections](https://mabecker89.github.io/abmi.camera.extras/articles/detections.html)
 </center>
 
 <br>

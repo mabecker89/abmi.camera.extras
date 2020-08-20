@@ -2,7 +2,7 @@
 title: "Estimate density in an area of interest"
 ---
 
-```{r, include=TRUE, echo=FALSE}
+```{r, include=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
 library(knitr)
 library(dplyr)
 library(abmi.camera.extras)
@@ -137,12 +137,12 @@ The distribution of density values is typically right-skewed, with most cameras 
 
 <br>
 
-``` {r echo=FALSE, fig.showtext=TRUE, out.width="80%"}
+```{r echo=FALSE, fig.showtext=TRUE, out.width="80%", fig.align="center", fig.height=6}
 
 add_abmi_fonts()
 
 # View distribution
-p1 <- ggplot(df_dens, aes(x = density, fill = common_name)) +
+ggplot(df_dens, aes(x = density, fill = common_name)) +
   geom_histogram(bins = 15) +
   coord_cartesian(ylim = c(0,30)) +
   facet_grid(common_name ~ WMUNIT_NAM) +
@@ -153,8 +153,6 @@ p1 <- ggplot(df_dens, aes(x = density, fill = common_name)) +
        title = "Distribution in estimated Moose and White-Tailed Deer density at\nindividual ABMI camera deployments in four WMUs.") +
   theme(legend.position = "none",
         title = element_text(size = 8))
-
-add_logo(p1)
 
 ```
 
@@ -224,9 +222,9 @@ df_dens_summary_agg <- sf_wmu %>%
 
 <br>
 
-```{r echo=FALSE, fig.showtext=TRUE}
+```{r echo=FALSE, fig.showtext=TRUE, fig.align='center', fig.height=6}
 
-p2 <- ggplot(data = df_dens_summary_agg, aes(x = WMUNIT_NAM, y = density_avg,
+ggplot(data = df_dens_summary_agg, aes(x = WMUNIT_NAM, y = density_avg,
                               ymin = density_lci_0.9, ymax = density_uci_0.9,
                               color = common_name)) +
   geom_errorbar(width = 0.3, size = 1.25) +
@@ -243,15 +241,15 @@ p2 <- ggplot(data = df_dens_summary_agg, aes(x = WMUNIT_NAM, y = density_avg,
         strip.text = element_text(size = 13),
         plot.title = element_text(size = 16))
 
-add_logo(p2)
-
 ```
 
 <br>
 
 <center>
-Next: [Important assumptions](link) <br>
-Previous: [Lure adjustments](link)
+Next: [Important assumptions](https://mabecker89.github.io/abmi.camera.extras/articles/assumptions.html) 
+<br>
+<br>
+Previous: [Lure adjustments](https://mabecker89.github.io/abmi.camera.extras/articles/lure.html)
 </center>
 
 <br>

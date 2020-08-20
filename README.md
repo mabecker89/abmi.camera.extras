@@ -10,32 +10,45 @@
 status](https://travis-ci.org/mabecker89/abmi.camera.extras.svg?branch=master)](https://travis-ci.org/mabecker89/abmi.camera.extras)
 <!-- badges: end -->
 
-This package and content provide information related to how the Alberta
-Biodiversity Monitoring Institute (ABMI) estimates the density of
-animals using data collected from remote cameras.
+This website and associated R package provide information related to how
+the Alberta Biodiversity Monitoring Institute (ABMI) estimates the
+density of animals using data collected from remote cameras.
 
 ### Site Contents
 
 #### ABMI Camera Data
 
-  - [Image summaries](link)
-  - [Species detections](link)
+  - [Image
+    summaries](https://mabecker89.github.io/abmi.camera.extras/articles/images.html)
+  - [Species
+    detections](https://mabecker89.github.io/abmi.camera.extras/articles/detections.html)
 
 #### Methods
 
   - [Overview](link)
-  - [Probabilistic gaps](link)
-  - [Deployment timeframes](link)
-  - [Time in the camera field of view](link)
-  - [Effective detection distance](link)
-  - [Density at individual deployments](link)
-  - [Lure adjustments](link)
-  - [Density in an area of interest (AOI)](link)
-  - [Important assumptions](link)
+  - [Probabilistic
+    gaps](https://mabecker89.github.io/abmi.camera.extras/articles/gaps.html)
+  - [Deployment
+    timeframes](https://mabecker89.github.io/abmi.camera.extras/articles/timeframes.html)
+  - [Time in the camera field of
+    view](https://mabecker89.github.io/abmi.camera.extras/articles/fov.html)
+  - [Effective detection
+    distance](https://mabecker89.github.io/abmi.camera.extras/articles/edd.html)
+  - [Density at individual
+    deployments](https://mabecker89.github.io/abmi.camera.extras/articles/dep-density.html)
+  - [Lure
+    adjustments](https://mabecker89.github.io/abmi.camera.extras/articles/lure.html)
+  - [Density in an area of interest
+    (AOI)](https://mabecker89.github.io/abmi.camera.extras/articles/aoi-density.html)
+  - [Important
+    assumptions](https://mabecker89.github.io/abmi.camera.extras/articles/assumptions.html)
 
 #### Functions
 
-## Installation
+  - [All
+    functions](https://mabecker89.github.io/abmi.camera.extras/references/index.html)
+
+## Package Installation
 
 ``` r
 # Install the latest version from Github:

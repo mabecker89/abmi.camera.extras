@@ -82,8 +82,10 @@ map1
 <br>
 
 <center>
-Next: [Method Overview](link) <br>
-Previous: [Image Summaries](link)
+Next: [Method Overview](https://mabecker89.github.io/abmi.camera.extras/articles/overview.html) 
+<br> 
+<br>
+Previous: [Image Summaries](https://mabecker89.github.io/abmi.camera.extras/articles/images.html)
 </center>
 
 <br>
