@@ -31,7 +31,7 @@ This website and associated R package provide information related to how the Alb
 
 #### Methods
 
-  + [Overview](link)
+  + [Overview](https://mabecker89.github.io/abmi.camera.extras/articles/overview.html)
   + [Probabilistic gaps](https://mabecker89.github.io/abmi.camera.extras/articles/gaps.html)
   + [Deployment timeframes](https://mabecker89.github.io/abmi.camera.extras/articles/timeframes.html)
   + [Time in the camera field of view](https://mabecker89.github.io/abmi.camera.extras/articles/fov.html)

@@ -25,7 +25,7 @@ density of animals using data collected from remote cameras.
 
 #### Methods
 
-  - [Overview](link)
+  - [Overview](https://mabecker89.github.io/abmi.camera.extras/articles/overview.html)
   - [Probabilistic
     gaps](https://mabecker89.github.io/abmi.camera.extras/articles/gaps.html)
   - [Deployment
