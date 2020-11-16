@@ -14,17 +14,61 @@ opts_chunk$set(include=TRUE, echo=TRUE, message=FALSE, warning=FALSE, eval=TRUE,
 
 ## Animal Density from Camera Data <img src = "man/figures/ABMI-notext.png" height="100" width="100" align="right" />
 
-> Data exploration, methods description, and functions from {abmi.camera.extras}
+> Data exploration, methods description, and functions from the {abmi.camera.extras} package
 
 <!-- badges: start -->
 [![Travis build status](https://travis-ci.org/mabecker89/abmi.camera.extras.svg?branch=master)](https://travis-ci.org/mabecker89/abmi.camera.extras)
 <!-- badges: end -->
 
-This website and associated R package provide information related to how the Alberta Biodiversity Monitoring Institute (ABMI) estimates the density of animals using data collected from remote cameras. 
+<br>
+
+The [Alberta Biodiversity Monitoring Institute](www.abmi.ca) is a scientific non-profit organization that monitors biodiversity throughout the province of Alberta, Canada[^1]. Since 2013, the ABMI has monitored the mammalian community primarily using the tool of remote game cameras[^2]. This website describes in depth how the ABMI uses images collected from remote game cameras to estimate animal density and inform models of habitat use. The accompanying R package, `abmi.camera.extras`, provides data, lookup tables, and functions for the interested user to either follow along or replicate the method in their own project. The functions included within the package are designed to work with data downloaded directly from platform [WildTrax](https://www.wildtrax.ca/home), which camera data can be stored and tagged prior to analysis; however, data from other sources can easily be manipulated to work with these functions.   
+
+[^1]: An in-depth explanation of the ABMI's core mandate and work can be read about [here](https://abmi.ca/home/what-we-do/overview.html).
+[^2]: Prior to 2013, snow-tracking methods were used. 
+
+We are aiming to cater this website to a wide variety of audience types. If you are only seeking an overview of this method then that is easy to navigate to: look no further than the **Overview tab**. The articles included here will (hopefully) illuminate the basic concepts in estimating density. If you find yourself interested in the nitty gritty details of how the individual components are forged from raw image data and come together as ingredients in the density calculation, articles included in the **Details tab** will be packed with rabbit holes for you to go down. Results and findings are also included here. Finally, technical audiences are invited to pursue the code examples that are included in (almost) every article, as well as the package functions documentation in the **Functions** tab.     
 
 ### Site Contents
 
+#### Overview
+
+  + Simple Explanation
+  + Essential Ingredients
+  + Other Considerations
+  + Assumptions 
+  
+#### Details and Results
+  
+  + Effective detection distance
+  + Time cameras are operating
+  + Time in camera field-of-view
+  + Seasonal effort
+  + Calculating density
+  
+#### Additional Considerations
+
+  + Lure effect
+  + Technological change
+  + Testing assumptions
+  + Habitat modeling
+  
+#### Tutorials
+
+  + Estimate density using REST
+  + Estimating density in an AOI
+  
+#### News
+
+  + Updates
+  + Blog
+  
 #### ABMI Camera Data
+
+  + abmi.camera.data
+  
+#### Functions
+  
 
   + [Image summaries](https://mabecker89.github.io/abmi.camera.extras/articles/images.html)
   + [Species detections](https://mabecker89.github.io/abmi.camera.extras/articles/detections.html)

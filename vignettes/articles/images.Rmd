@@ -1,0 +1,127 @@
+---
+title: "Image Summaries"
+---
+
+```{r, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  include=TRUE, echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE
+)
+
+root <- "G:/Shared drives/ABMI Camera Mammals/data/"
+
+# Attach packages
+library(readr)
+library(stringr)
+library(dplyr)
+library(forcats)
+library(ggplot2)
+library(abmi.themes)
+
+# Load data
+deployments <- read_csv(paste0(root, "lookup/locations/all-cam-public-locations_2020-07-31.csv")) %>%
+  filter(str_detect(name, "ABMI")) %>%
+  mutate(location = ifelse(str_detect(name, "OG"), "Off-grid", "Core")) %>%
+  select(name, year, location)
+
+df_abmi_native <- read_csv(paste0(root, "base/clean/abmi-all-years_native-sp_clean_2020-06-25.csv")) %>%
+  filter(!(common_name == "Songbird" | common_name == "Ducks, Swans, Geese")) %>%
+  group_by(common_name) %>%
+  summarise(images = n()) %>%
+  arrange(desc(images)) %>%
+  top_n(n = 11, wt = images) %>%
+  mutate(common_name = fct_reorder(as.factor(common_name), images))
+
+```
+
+## Tagging images and checking accuracy
+
+ABMI cameras have generated about 10 million images so far. Some of these are images taken at fixed time intervals to document the site conditions and verify that the camera was operating. The majority of the images are motion-triggered, and need to have their content identified. We use several automated processes to reduce the number of images that human taggers need to look at:
+
+  1. Neural network “auto-taggers” are trained to recognize images with no animals (“None” images) and images with domestic cows.
+  
+  2. A two-stage subsampling procedure is used with series of 6 or more images separated by less than a two-minute cut-off: 5 randomly selected images are tagged by humans and used to fill in the rest of the series, unless a native mammal is detected in any of the 5 images, in which case all images in the series are tagged by people.
+  
+  3. Additional auto-filling rules are used when a substantial number of images in a series are tagged by an auto-tagger, and for images that occur at the start or end of a deployment that are staff setting up cameras.
+  
+Cut-off scores for the auto-taggers, the subsampling approach and the other rules were all developed using data from millions of images and were set so that they are expected to miss <0.1% of images of native animals.  With these procedures, approximately 15% of the total number of images are tagged by humans.
+
+After all images have been tagged, we do a second species-by-species check of all identified native mammals to look for errors, including in difficult to separate species, such as marten and fisher, or white-tailed and mule deer (and we include categories for unknown deer or other groups).
+
+Finally, we do another test of 5,000 randomly selected images from each of the different processes – auto-tagged None, auto-tagged Cows, filled-in subsampled series, human-tagged None, human-tagged cows, human-tagged native mammals – to assess final accuracy. The automated processes all miss <0.1% of native mammals. Human taggers have a somewhat higher error rate, generally for ambiguous images. These error rates are about 100+ times better than we find for surveys of birds or plants. Details of the tagging processes and the accuracy tests are available in separate documents.
+
+## Summary statistics
+
+### Number of camera deployments
+
+Here we display the number of camera deployments that have been placed by the ABMI each year, categorized by core grid vs off grid.
+
+<br>
+
+```{r out.width="75%", fig.showtext=TRUE, fig.align='center', fig.height=6}
+
+add_abmi_fonts()
+
+deployments %>%
+  mutate(year = as.factor(year),
+         location = factor(location, levels = c("Off-grid", "Core"))) %>%
+  ggplot(aes(x = year, fill = location)) +
+  geom_bar(stat = "count", color = "black", width = 0.8) +
+  theme_abmi() +
+  scale_fill_abmi(palette = "main", reverse = TRUE) +
+  scale_y_continuous(breaks = seq(0,1000,100), limits = c(0,1000)) +
+  labs(x = "",
+       y = "",
+       title = "Number of ABMI Camera Deployments",
+       subtitle = "By Sampling Year") +
+  theme(legend.position = "bottom",
+        legend.title = element_blank(),
+        title = element_text(size = 10))
+
+```
+
+<br>
+
+### Images of native mammals
+
+We summarise the number of images captured by species between 2013 and 2019 for the 11 most common animals. 
+
+<br>
+
+```{r out.width="75%", fig.showtext=TRUE, fig.align='center', fig.height=6}
+
+df_abmi_native %>%
+  ggplot(aes(x = common_name, y = images, fill = common_name)) +
+  geom_col(color = "black") +
+  scale_fill_viridis_d() +
+  coord_flip() +
+  theme_abmi() +
+  scale_y_continuous(labels = scales::comma, breaks = seq(0, 250000, 50000)) +
+  labs(title = "Total number of images captured",
+       subtitle = "For the 11 most captured species by ABMI cameras\ndeployed from 2013-2019.",
+       y = "Images") +
+  theme(legend.position = "none",
+        panel.grid.major.y = element_blank(),
+        panel.grid.major.x = element_line(size = 1, color = "grey90"),
+        axis.title.y = element_blank(),
+        axis.text.y = element_text(size = 11),
+        axis.title.x = element_text(size = 14),
+        axis.text.x = element_text(size = 12, hjust = 1, angle = 45),
+        title = element_text(size = 10))
+
+```
+
+<br>
+
+White-tailed and Mule deer account for a large percentage of images taken to-date by remote cameras, following by moose, elk, and black bear.
+
+<br>
+
+<center>
+Next: [Species Detections](https://mabecker89.github.io/abmi.camera.extras/articles/detections.html)
+</center>
+
+<br>
+

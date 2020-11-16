@@ -1,0 +1,76 @@
+---
+title: "Calculate total time in front of camera by series"
+---
+
+```{r, include=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  include=TRUE, echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE
+)
+
+# Path to Google Drive
+root <- "G:/Shared drives/ABMI Camera Mammals/data/"
+
+# Attach packages
+library(readr)
+library(dplyr)
+library(tidyr)
+library(DT)
+library(here)
+
+# Load data
+load(here("data/species.rda"))
+
+df_series_summary <- read_csv(paste0(root, "processed/series-summary/abmi-all-years_series-summary_2020-08-18.csv")) %>%
+  filter(common_name %in% species) %>%
+  group_by(common_name, year) %>%
+  summarise(series = n(),
+            sites = n_distinct(name),
+            total_individuals = floor(sum(avg_individuals)),
+            total_dur_s = floor(sum(series_total_time)),
+            total_dur_m = floor(total_dur_s / 60),
+            total_dur_h = round(total_dur_m / 60, digits = 2))
+
+# Add missing combinations
+df_series_summary_all <- data.frame(common_name = species) %>%
+  crossing(year = 2014:2019) %>%
+  anti_join(df_series_summary, by = c("common_name", "year")) %>%
+  mutate(series = 0, sites = 0, total_individuals = 0, 
+         total_dur_s = 0, total_dur_m = 0, total_dur_h = 0) %>%
+  bind_rows(df_series_summary) %>%
+  select(-total_dur_h) %>%
+  arrange(common_name)
+
+```
+
+Using the difference in time between each image that has been adjusted for the probability of leaving (when gaps are between 20 and 120 seconds), we can then proceed to calculate the total time for each series, first for multiple-image series and then single image series.
+
+We also account for the number of individuals in the series. The number of individuals of each species visible in each image are simply counted. Juveniles – often in company of their mothers – are counted and therefore included in the density estimates. We note age class of each animal so that we could exclude non-adults if we wanted for some analysis (assuming we are confident in that designation in all images). Distant animals are sometimes captured in images triggered by an individual closer to the camera. We count all individuals, because it is not clear how we would know an individual was too distant to trigger the camera. To be consistent, when we are collecting data on animals in front of or behind the 5m pole, we also include all individuals, even distant individuals when a closer animal clearly triggered the image. Distant animals therefore increase the effective detection distance, although only to the same extent as any animal beyond the 5m pole.
+
+Series of images showing continuous presence of a species in front of the camera (defined in the next subsection) can have different numbers of individuals. Because the density measure only requires total animal-seconds – i.e., it doesn’t matter which individual(s) is/are in front of the camera at any one time – we simply take the average number of individuals in each photograph in the series. A series with 1, 1, 2 and 1 individual in its four photos would have 1.25 individuals present on average. This may produce a slight upward bias in the density index, because it is possible that the camera would be triggered more often when there are more individuals in front of the camera (because one individual is more likely to be moving, and there is more likely to be an individual closer to the camera’s motion detectors). More individuals may therefore be associated with shorter intervals between images than the average for the series. A more precise approach might be to do a time-weighted average number of individuals in the series, where the time for each image is the interval from the mid-point between it and the previous image, and the mid-point with the subsequent image. This more complicated time-weighted average has not yet been implemented at ABMI, because it probably makes little difference to the estimate, even when variable numbers of individuals are present in a series.
+
+Series summary statistics, including the number of series, unique camera deployments seen at, number of individuals, and total duration in front of the camera, by species and year, is available below.
+
+<br>
+
+```{r}
+
+datatable(df_series_summary_all,
+          rownames = FALSE,
+          class = 'cell-border-stripe',
+          colnames = c("Species", "Year", "No. of Series", "Unique Sites", "Individuals", "Seconds", "Minutes"))
+
+```
+
+<br>
+
+<center>
+Next: [Effective detection distance](https://mabecker89.github.io/abmi.camera.extras/articles/edd.html) 
+<br>
+<br>
+Previous: [Deployment timeframes](https://mabecker89.github.io/abmi.camera.extras/articles/timeframes.html)
+</center>
+
+<br>
+

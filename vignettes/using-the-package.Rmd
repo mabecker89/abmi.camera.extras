@@ -1,0 +1,105 @@
+---
+title: "Using abmi.camera.extras"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{new}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+# Load package
+library(abmi.camera.extras)
+
+# Load packages for working with spatial data and plotting results
+library(sf)
+```
+
+The first step is to define an area of interest, such as a Wildlife Management Unit, Municipality, Land Use Planning Region, etc. Below, this is done using the `sf` package to read into R a shapefile of four WMUs - Crow Lake (code 512), Lac La Biche (503), Beaver River (502), and Amisk (504) - all of which are located in the central-east part of Alberta. 
+
+```{r}
+
+# Define aoi
+sf_wmu <- sf::st_read(system.file("extdata/wmu_sample.shp", package = "abmi.camera.extras"), quiet = TRUE)
+
+# Take a look at structure and attributes
+str(sf_wmu)
+
+```
+
+Next, we subset ABMI camera deployments spatially with the `ace_get_cam()` function:
+
+```{r warning=FALSE}
+
+# Retrieve deployments in aoi as dataframe
+df_deployments <- ace_get_cam(aoi = sf_wmu,
+                              group_id = WMUNIT_NAM, # Use `id` to define identifier (e.g. WMU name)
+                              crs = 4326) # If desired, (re)project using the `crs` argument
+
+# Plot deployments
+sf_wmu <- st_transform(sf_wmu, "+init=epsg:4326")
+plot(df_deployments$geometry, pch = 21, cex = 0.7, col = "#2D415B", bg = "gray80")
+plot(sf_wmu$geometry, border = "gray20", col = NA, add = TRUE)
+# Remember that each point represents an ABMI site, which has four camera deployments spaced 600-m apart. 
+
+```
+
+Users may wish to spatially subset their own dataframe of camera deployments locations, instead of retrieving the ABMI's. This can be done by supplying the `dep = ` argument in `ace_get_cam()`, along with specifying which columns hold the lat/long coordinates in the `coords = ` argument.
+
+From here we can join density estimates for a species of interest in a given sampling period for each deployment using the `ace_join_dens()` function:
+
+```{r warning=FALSE}
+
+# Join density
+df_dens <- ace_join_dens(x = df_deployments,
+                         species = c("Moose", "White-tailed Deer"), # See ?ace_join_dens for list of available species
+                         # samp_per = "2018", option to define specific sampling period if desired
+                         nest = FALSE)
+
+head(df_dens, 10)
+
+```
+
+Note that the `samp_per` column refers to *sampling period*, which, in the case of the ABMI, is done yearly.
+
+The distribution of density values is typically right-skewed, with most cameras not detecting any individuals (0 density), some that detect a small number of individuals just passing by (low density), and a few who capture longer periods of animal activity (high density).
+
+<br>
+
+<br>
+
+The last step is to estimate the density of each of the species defined previously in the area of the interest, which can be done with the `ace_summarise_dens()` function.
+
+```{r}
+
+# Summarise density
+df_dens_summary <- ace_summarise_dens(x = df_dens,
+                                      group_id = WMUNIT_NAM, # to group deployments when evaluating multiple aoi or treatments
+                                      agg_samp_per = TRUE, # option to aggregate sampling periods
+                                      samp_per_col = samp_per, # to indicate which column refers to sampling period to group on
+                                      species_col = common_name, # to indicate which column refers to species to group on
+                                      dens_col = density, # column where density values are held
+                                      conflevel = 0.9) # for confidence interval - default 90%
+
+```
+
+Note that `ace_summarise_dens()` can be used independently of the first two functions if the user wishes to summarise external density data. If supplying your own dataframe (i.e. df_dens), rather than using output from the first two functions, make sure that the data is formated in a [tidy way](https://r4ds.had.co.nz/tidy-data.html). Each row should represent an observation of density at a single deployment, and each column a variable (e.g. species, treatment, sampling period). The arguments `samp_per_col`, `species_col`, and `dens_col` can be used to customize the call of `ace_summarise_dens` to suit your data. 
+
+The output is a dataframe with the following attributes (beside the grouping variable, year, and species):
+
++ `occupied` - number of deployments with a individual of that species present
++ `n_deployments` - total number of deployments
++ `prop_occupied` - proportion of deployments occupied
++ `density_avg` - estimated density for the area/year/species combination
++ `density_lci` - lower bounds of confidence interval (level specified in `conflevel` attribute)
++ `density_uci` - upper bounds of confidence interval
+
+The precision of the density value is estimated through Monte Carlo simulation using the [delta method](https://en.wikipedia.org/wiki/Delta_method). Note that some ABMI camera deployments are set up with a lure; the subsequent density estimates have been adjusted to facilitate comparison with non-lured estimates when summarising animal density for an aoi.
+

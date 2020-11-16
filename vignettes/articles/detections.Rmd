@@ -1,0 +1,91 @@
+---
+title: "Species Detections"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  include=TRUE, echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE
+)
+```
+
+Use the map to toggle between sampling year and species name to find where eleven of the most common species have been detected at ABMI core grid camera sites from 2013 to 2019.
+
+<br>
+
+```{r}
+
+root <- "G:/Shared drives/ABMI Camera Mammals/"
+
+library(sf)
+#devtools::install_github("rstudio/crosstalk", ref = "joe/feature/filter-select-default")
+library(crosstalk)
+library(readr)
+library(dplyr)
+library(leaflet)
+library(leaflet.extras)
+
+# Alberta polygon
+sf_ab <- st_read(paste0(root, "data/spatial/ab_prov.shp"), quiet = TRUE, stringsAsFactors = FALSE)
+
+# Occurrences
+df_occurrence <- read_csv(paste0(root, "data/processed/occurrences/occurrences.csv")) %>%
+  mutate(present = factor(present, levels = c("yes", "no")),
+         present = ifelse(present == "yes", "Yes", "No"))
+
+# Create palettes for map - presence/absence.
+pal1 <- colorFactor(palette = c("grey80", "#0d41ff"),
+                    domain = df_occurrence$present)
+
+# Create SharedData object for crosstalk interactivity
+shared_ss <- SharedData$new(df_occurrence)
+
+# Create leaflet map
+map1 <- sf_ab %>%
+  st_transform("+init=epsg:4326") %>%
+  leaflet() %>%
+  addTiles() %>%
+  addProviderTiles("Stamen.TerrainBackground") %>%
+  addFullscreenControl() %>%
+  addResetMapButton() %>%
+  addScaleBar(position = "bottomright", 
+              options = scaleBarOptions(imperial = FALSE)) %>%
+  
+  # Add polygon layers
+  
+  addPolygons(color = "#070707", weight = 1, smoothFactor = 0.2, opacity = 2) %>%
+  
+  addCircleMarkers(data = shared_ss,
+                   color = ~pal1(present), stroke = FALSE, fillOpacity = 1, 
+                   radius = 3) %>%
+  
+  # Add legend
+  
+  addLegend(data = shared_ss, pal = pal1, values = ~present,
+            position = "topright", opacity = 1, title = "Occurrence at a site:")
+
+```
+
+```{r, out.width="100%", fig.height=9}
+
+# Create interactive filters
+bscols(widths = c(4, 4),
+       filter_checkbox("Year", "Sampling Year", shared_ss, ~year, inline = TRUE, columns = 3),
+       filter_select("common_name", "Species", shared_ss, ~common_name, multiple = FALSE, selected = "Moose"))
+    
+# Display map
+map1
+
+```
+
+<br>
+
+<center>
+Next: [Method Overview](https://mabecker89.github.io/abmi.camera.extras/articles/overview.html) 
+<br> 
+<br>
+Previous: [Image Summaries](https://mabecker89.github.io/abmi.camera.extras/articles/images.html)
+</center>
+
+<br>

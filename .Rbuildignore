@@ -9,5 +9,3 @@
 ^pkgdown$
 ^data-raw$
 ^vignettes/articles$
-^vignettes/02_gaps.Rmd
-^vignettes/01_overview.Rmd

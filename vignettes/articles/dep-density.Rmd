@@ -1,0 +1,95 @@
+---
+title: "Density at individual camera deployments"
+---
+
+```{r, include=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  include=TRUE, echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE
+)
+
+# Path to Google Drive
+root <- "G:/Shared drives/ABMI Camera Mammals/"
+
+# Attach packages
+library(readr)
+library(dplyr)
+library(forcats)
+library(ggplot2)
+library(abmi.themes)
+library(here)
+
+load(here("data/species.rda"))
+
+df_top11 <- read_csv(paste0(root, "data/lookup/species-top11-by-images.csv"))
+
+# Load data and clean data
+df_density <- read_csv(paste0(root, "results/density/Marcus/abmi-all-years_density_2020-07-30.csv")) %>%
+  filter(common_name %in% species,
+         !is.na(density_km2)) %>%
+  left_join(df_top11, by = "common_name") %>%
+  mutate(common_name = fct_reorder(factor(common_name), images, .desc = TRUE))
+
+```
+
+The distributions of density estimates of species at deployments are extremely skewed, with a large majority of deployments having none of a species, some deployments having low densities (one or a few individuals passing by) while a few have very high values (one or more individuals spending long periods in front of a particular camera). Such distributions require large sample sizes to obtain precise estimates – for example, for yearly changes in density in a region or to use for estimating abundances in different habitat types. Ecologists’ intuitive experience with adequate sample sizes may be very misleading with these kinds of distributions. Pilot studies and formal analysis of expected precision are recommended for large projects.
+
+<br>
+
+```{r, fig.showtext=TRUE, out.width="90%", fig.height=10}
+
+add_abmi_fonts()
+
+df_density %>%
+  ggplot(aes(x = density_km2, fill = common_name)) +
+  geom_histogram(bins = 40) +
+  scale_fill_viridis_d(direction = -1) +
+  coord_cartesian(ylim = c(0, 250)) +
+  labs(x = expression(Density~(individuals~per~km^2)),
+       y = "Number of Deployments",
+       title = "Distribution in estimated density among\ncamera deployments",
+       subtitle = "For 11 common mammal species.") +
+  facet_wrap(~ common_name, scales = "free", nrow = 4) +
+  theme_abmi() +
+  theme(legend.position = "none",
+        strip.text = element_text(size = 10))
+
+```
+
+<br>
+
+For habitat modeling, we find that the density estimates are best treated as a compound distribution of presence/absence – modeling how the 0 records differ from the non-0 records – and of abundance where the species is present – explaining variation in abundance where the species was recorded. We model presence/absence with the typical logit-linked binomial model, and the abundance-given-presence distribution with a log-normal distribution, which fits most of the species’ distributions reasonably well. This compound distribution is the same as a zero-inflated log-normal distribution, but explicitly treating the two components separately allows more flexible modeling and critical examination of each component.
+
+<br>
+
+```{r, fig.showtext=TRUE, fig.height=10, out.width="90%"}
+
+df_density %>%
+  filter(density_km2 > 0) %>%
+  ggplot(aes(x = density_km2, fill = common_name)) + 
+  geom_histogram(bins = 30) +
+  scale_fill_viridis_d(direction = -1) +
+  scale_x_log10(labels = scales::number_format(accuracy = 0.1)) +
+  labs(x = expression(Density~(individuals~per~km^2)),
+       y = "Number of Deployments",
+       title = "Log-normal distribution of density among\ncamera deployments",
+       subtitle = "Using only presence records for 11 common mammal species.") +
+  facet_wrap(~ common_name, scales = "free", nrow = 4) +
+  theme_abmi() +
+  theme(legend.position = "blank",
+        strip.text = element_text(size = 10),
+        panel.grid.minor = element_blank())
+
+```
+
+<br>
+
+<center>
+Next: [Lure adjustments](https://mabecker89.github.io/abmi.camera.extras/articles/lure.html)
+<br>
+<br>
+Previous: [Effective detection distance](https://mabecker89.github.io/abmi.camera.extras/articles/edd.html)
+</center>
+
+<br>
